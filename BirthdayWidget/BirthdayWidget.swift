@@ -43,16 +43,39 @@ struct BirthdayWidgetEntryView : View {
     @Query(sort: \Contact.birthday, order: .reverse) var contact: [Contact]
     var dateFormatter: DateFormatter {
             let formatter = DateFormatter()
-            formatter.dateStyle = .short
+        formatter.dateFormat = "MM/dd"
             return formatter
         }
     
     var upcomingContacts: [Contact] {
-           let today = Date()
-           return contact.filter { $0.birthday ?? today >= today }
-                         .sorted { $0.birthday ?? today < $1.birthday ?? today }
-                         .prefix(3).map { $0 }
-       }
+            let today = Date()
+            return Array(contact.filter { $0.birthday != nil }
+                          .sorted { (c1, c2) -> Bool in
+                              let calendar = Calendar.current
+                              guard let birthday1 = c1.birthday, let birthday2 = c2.birthday else {
+                                  return false
+                              }
+                              let components1 = calendar.dateComponents([.month, .day], from: birthday1)
+                              let components2 = calendar.dateComponents([.month, .day], from: birthday2)
+                              
+                              if let month1 = components1.month, let day1 = components1.day,
+                                 let month2 = components2.month, let day2 = components2.day {
+                                  if month1 == month2 {
+                                      return day1 < day2
+                                  } else {
+                                      return month1 < month2
+                                  }
+                              }
+                              return false
+                          }
+                          .filter {
+                              let birthdayComponents = Calendar.current.dateComponents([.month, .day], from: $0.birthday!)
+                              let todayComponents = Calendar.current.dateComponents([.month, .day], from: today)
+                              return (birthdayComponents.month! > todayComponents.month!) ||
+                                     (birthdayComponents.month! == todayComponents.month! && birthdayComponents.day! >= todayComponents.day!)
+                          }
+                          .prefix(3))
+        }
     
     var body: some View {
         VStack {

@@ -14,13 +14,19 @@ struct ContentView: View {
     @Query var contacts: [Contact]
     @State private var showingAddView = false
     
+    var dateFormatter: DateFormatter {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "MM/dd" // Set to display month and day only
+            return formatter
+        }
+    
     var body: some View {
         NavigationStack {
             List {
                 ForEach(contacts) { contact in
                     VStack {
                         Text(contact.name)
-                        Text("\(contact.birthday ?? Date.now, formatter: DateFormatter.shortDate)")
+                        Text("\(contact.birthday ?? Date.now, formatter: dateFormatter)")
                     }
                 }
             }
@@ -71,13 +77,7 @@ struct ContentView: View {
        }
 }
 
-extension DateFormatter {
-    static let shortDate: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .short
-        return formatter
-    }()
-}
+
 
 #Preview {
     ContentView()
