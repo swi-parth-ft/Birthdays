@@ -17,7 +17,7 @@ struct ContentView: View {
     @State private var defaultImageData: Data = UIImage(systemName: "person")!.jpegData(compressionQuality: 1.0)!
     var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
-        formatter.dateFormat = "MM/dd" // Set to display month and day only
+        formatter.dateFormat = "d MMMM" // Set to display month and day only
         return formatter
     }
     
@@ -67,7 +67,7 @@ struct ContentView: View {
                 ForEach(upcomingContacts) { contact in
                     HStack {
                         VStack(alignment: .leading) {
-                            Text(contact.name)
+                            Text(isBirthdayToday(birthday: contact.birthday!) ? "\(contact.name) 🎂" : contact.name)
                                 .font(.headline)
                             Text("\(contact.birthday ?? Date.now, formatter: dateFormatter)")
                                 .font(.subheadline)
@@ -89,6 +89,16 @@ struct ContentView: View {
                 AddContactView()
             }
         }
+    }
+    
+    func isBirthdayToday(birthday: Date) -> Bool {
+        let calendar = Calendar.current
+        let today = Date()
+        
+        let todayComponents = calendar.dateComponents([.month, .day], from: today)
+        let birthdayComponents = calendar.dateComponents([.month, .day], from: birthday)
+        
+        return todayComponents.month == birthdayComponents.month && todayComponents.day == birthdayComponents.day
     }
     
     func deletePerson(at offsets: IndexSet) {
