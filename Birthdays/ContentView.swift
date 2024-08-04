@@ -13,6 +13,7 @@ struct ContentView: View {
     @Environment(\.modelContext) var modelContext
     @Query var contacts: [Contact]
     @State private var showingAddView = false
+    @State private var defaultImageData: Data = UIImage(systemName: "person")!.jpegData(compressionQuality: 1.0)!
     
     var dateFormatter: DateFormatter {
             let formatter = DateFormatter()
@@ -31,6 +32,7 @@ struct ContentView: View {
                             .font(.subheadline)
                     }
                 }
+                .onDelete(perform: deleteBirthday)
             }
             .navigationTitle("Birthdays")
             .toolbar {
@@ -47,11 +49,19 @@ struct ContentView: View {
         }
     }
     
+    func deleteBirthday(at offsets: IndexSet) {
+        for index in offsets {
+            let contact = contacts[index]
+            modelContext.delete(contact)
+        }
+    }
+    
+    
     private func fetchContacts() {
            let store = CNContactStore()
            store.requestAccess(for: .contacts) { granted, error in
                if granted {
-                   let keysToFetch = [CNContactGivenNameKey, CNContactFamilyNameKey, CNContactBirthdayKey] as [CNKeyDescriptor]
+                   let keysToFetch = [CNContactGivenNameKey, CNContactFamilyNameKey, CNContactBirthdayKey, CNContactImageDataKey] as [CNKeyDescriptor]
                    let request = CNContactFetchRequest(keysToFetch: keysToFetch)
                    
                    var fetchedContacts: [Contact] = []
@@ -59,22 +69,23 @@ struct ContentView: View {
                        try store.enumerateContacts(with: request) { contact, stop in
                            let name = "\(contact.givenName) \(contact.familyName)"
                            if let birthdate = contact.birthday?.date {
-                               let new = Contact(id: UUID(), name: name, birthday: birthdate)
-                               fetchedContacts.append(new)
-                          
-                                       modelContext.insert(new)
-                                       try? modelContext.save()
+                               let image = contact.imageData
+                                   let new = Contact(id: UUID(), name: name, birthday: birthdate)
+                                   fetchedContacts.append(new)
+                                   
+                                   modelContext.insert(new)
+                                   try? modelContext.save()
+                               
                                    
                                
                                
                            }
                        }
-//                       DispatchQueue.main.async {
-//                           self.contacts = fetchedContacts
-//                       }
+                   
                    } catch {
                        print("Failed to fetch contacts: \(error)")
                    }
+                   
                } else {
                    print("Access to contacts was denied.")
                }

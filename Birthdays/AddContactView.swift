@@ -23,10 +23,10 @@ struct AddContactView: View {
             TextField("Name", text: $name)
             DatePicker("Birthday", selection: $birthday, displayedComponents: .date)
             Button("Add Contact") {
-                let newContact = Contact(name: name, birthday: birthday)
-                modelContext.insert(newContact)
-                try? modelContext.save()
-                WidgetCenter.shared.reloadAllTimelines()
+//                let newContact = Contact(name: name, birthday: birthday)
+//                modelContext.insert(newContact)
+//                try? modelContext.save()
+//                WidgetCenter.shared.reloadAllTimelines()
             }
             
         }

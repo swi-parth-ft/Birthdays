@@ -12,10 +12,12 @@ class Contact: Identifiable {
     var id = UUID()
     @Attribute(.unique) var name: String
     var birthday: Date?
+
     
     init(id: UUID = UUID(), name: String, birthday: Date) {
         self.id = id
         self.name = name
         self.birthday = birthday
+      
     }
 }
