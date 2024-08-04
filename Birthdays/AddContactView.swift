@@ -15,7 +15,7 @@ struct AddContactView: View {
     @Query var contacts: [Contact]
     @State private var name = ""
     @State private var birthday = Date()
-    
+    @State private var defaultImageData: Data = UIImage(systemName: "person")!.jpegData(compressionQuality: 1.0)!
     
     
     var body: some View {

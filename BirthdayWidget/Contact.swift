@@ -7,6 +7,9 @@
 import SwiftUI
 import SwiftData
 
+import SwiftUI
+import SwiftData
+
 @Model
 class Contact: Identifiable {
     var id = UUID()
