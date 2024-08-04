@@ -10,7 +10,7 @@ import SwiftData
 @Model
 class Contact: Identifiable {
     var id = UUID()
-    var name: String
+    @Attribute(.unique) var name: String
     var birthday: Date?
     
     init(id: UUID = UUID(), name: String, birthday: Date) {
