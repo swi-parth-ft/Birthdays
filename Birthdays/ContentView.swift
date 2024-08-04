@@ -65,14 +65,14 @@ struct ContentView: View {
         NavigationStack {
             List {
                 ForEach(upcomingContacts) { contact in
-                    HStack {
+               
                         VStack(alignment: .leading) {
                             Text(isBirthdayToday(birthday: contact.birthday!) ? "\(contact.name) 🎂" : contact.name)
                                 .font(.headline)
                             Text("\(contact.birthday ?? Date.now, formatter: dateFormatter)")
                                 .font(.subheadline)
                         }
-                    }
+                    
                 }
                 .onDelete(perform: deletePerson)
             }
@@ -94,7 +94,6 @@ struct ContentView: View {
     func isBirthdayToday(birthday: Date) -> Bool {
         let calendar = Calendar.current
         let today = Date()
-        
         let todayComponents = calendar.dateComponents([.month, .day], from: today)
         let birthdayComponents = calendar.dateComponents([.month, .day], from: birthday)
         
@@ -103,7 +102,8 @@ struct ContentView: View {
     
     func deletePerson(at offsets: IndexSet) {
         for index in offsets {
-            let person = contacts[index]
+            let person = upcomingContacts[index]
+            print(index)
             modelContext.delete(person)
             try? modelContext.save()
             WidgetCenter.shared.reloadAllTimelines()
