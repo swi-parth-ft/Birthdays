@@ -24,9 +24,11 @@ struct ContentView: View {
         NavigationStack {
             List {
                 ForEach(contacts) { contact in
-                    VStack {
+                    VStack(alignment: .leading) {
                         Text(contact.name)
+                            .font(.headline)
                         Text("\(contact.birthday ?? Date.now, formatter: dateFormatter)")
+                            .font(.subheadline)
                     }
                 }
             }
@@ -59,9 +61,12 @@ struct ContentView: View {
                            if let birthdate = contact.birthday?.date {
                                let new = Contact(id: UUID(), name: name, birthday: birthdate)
                                fetchedContacts.append(new)
+                          
+                                       modelContext.insert(new)
+                                       try? modelContext.save()
+                                   
                                
-                               modelContext.insert(new)
-                               try? modelContext.save()
+                               
                            }
                        }
 //                       DispatchQueue.main.async {
