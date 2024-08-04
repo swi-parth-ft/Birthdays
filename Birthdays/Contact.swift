@@ -12,12 +12,13 @@ class Contact: Identifiable {
     var id = UUID()
     @Attribute(.unique) var name: String
     var birthday: Date?
+    var image: Data
 
     
-    init(id: UUID = UUID(), name: String, birthday: Date) {
+    init(id: UUID = UUID(), name: String, birthday: Date, image: Data) {
         self.id = id
         self.name = name
         self.birthday = birthday
-      
+        self.image = image
     }
 }

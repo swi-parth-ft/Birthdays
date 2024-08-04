@@ -25,11 +25,18 @@ struct ContentView: View {
         NavigationStack {
             List {
                 ForEach(contacts) { contact in
-                    VStack(alignment: .leading) {
-                        Text(contact.name)
-                            .font(.headline)
-                        Text("\(contact.birthday ?? Date.now, formatter: dateFormatter)")
-                            .font(.subheadline)
+                    HStack {
+                        VStack(alignment: .leading) {
+                            Text(contact.name)
+                                .font(.headline)
+                            Text("\(contact.birthday ?? Date.now, formatter: dateFormatter)")
+                                .font(.subheadline)
+                        }
+                        Spacer()
+                        Image(uiImage: UIImage(data: contact.image)!)
+                            .resizable()
+                            .frame(width: 50, height: 50)
+                            
                     }
                 }
                 .onDelete(perform: deleteBirthday)
@@ -70,7 +77,7 @@ struct ContentView: View {
                            let name = "\(contact.givenName) \(contact.familyName)"
                            if let birthdate = contact.birthday?.date {
                                let image = contact.imageData
-                                   let new = Contact(id: UUID(), name: name, birthday: birthdate)
+                               let new = Contact(id: UUID(), name: name, birthday: birthdate, image: image ?? defaultImageData)
                                    fetchedContacts.append(new)
                                    
                                    modelContext.insert(new)
