@@ -8,6 +8,7 @@
 import SwiftUI
 import SwiftData
 import Contacts
+import WidgetKit
 
 struct ContentView: View {
     @Environment(\.modelContext) var modelContext
@@ -31,6 +32,7 @@ struct ContentView: View {
                             .font(.subheadline)
                     }
                 }
+                .onDelete(perform: deletePerson)
             }
             .navigationTitle("Birthdays")
             .toolbar {
@@ -44,6 +46,15 @@ struct ContentView: View {
             .sheet(isPresented: $showingAddView) {
                 AddContactView()
             }
+        }
+    }
+    
+    func deletePerson(at offsets: IndexSet) {
+        for index in offsets {
+            let person = contacts[index]
+            modelContext.delete(person)
+            try? modelContext.save()
+            WidgetCenter.shared.reloadAllTimelines()
         }
     }
     
