@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import WidgetKit
 
 struct AddContactView: View {
     
@@ -25,6 +26,7 @@ struct AddContactView: View {
                 let newContact = Contact(name: name, birthday: birthday)
                 modelContext.insert(newContact)
                 try? modelContext.save()
+                WidgetCenter.shared.reloadAllTimelines()
             }
             
         }

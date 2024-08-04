@@ -40,14 +40,24 @@ struct SimpleEntry: TimelineEntry {
 
 struct BirthdayWidgetEntryView : View {
     var entry: Provider.Entry
-    @Query var contact: [Contact]
+    @Query(sort: \Contact.birthday, order: .reverse) var contact: [Contact]
+    var dateFormatter: DateFormatter {
+            let formatter = DateFormatter()
+            formatter.dateStyle = .short
+            return formatter
+        }
+    
+    var upcomingContacts: [Contact] {
+           let today = Date()
+           return contact.filter { $0.birthday ?? today >= today }
+                         .sorted { $0.birthday ?? today < $1.birthday ?? today }
+                         .prefix(3).map { $0 }
+       }
     
     var body: some View {
         VStack {
-           
-
-            ForEach(contact) { con in
-                    Text("\(con.name)'s Birthday: \(con.birthday ?? Date())")
+            ForEach(upcomingContacts) { con in
+                Text("\(con.name) : \(con.birthday ?? Date(), formatter: dateFormatter)")
             }
         }
     }
