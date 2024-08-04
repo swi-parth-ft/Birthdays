@@ -1,18 +1,17 @@
 //
-//  Contacts.swift
+//  Contact.swift
 //  Birthdays
 //
 //  Created by Parth Antala on 8/4/24.
 //
-
-import Foundation
+import SwiftUI
 import SwiftData
 
 @Model
-class Contacts: Identifiable {
+class Contact: Identifiable {
     var id = UUID()
     var name: String
-    var birthday: Date
+    var birthday: Date?
     
     init(id: UUID = UUID(), name: String, birthday: Date) {
         self.id = id

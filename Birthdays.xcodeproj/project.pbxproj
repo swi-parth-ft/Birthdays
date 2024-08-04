@@ -11,8 +11,51 @@
 		07FB37CE2C5FCB350070EEFA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FB37CD2C5FCB350070EEFA /* ContentView.swift */; };
 		07FB37D02C5FCB360070EEFA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07FB37CF2C5FCB360070EEFA /* Assets.xcassets */; };
 		07FB37D32C5FCB360070EEFA /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07FB37D22C5FCB360070EEFA /* Preview Assets.xcassets */; };
-		07FB37DA2C5FCB450070EEFA /* Contacts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FB37D92C5FCB450070EEFA /* Contacts.swift */; };
+		07FB37DC2C5FCC670070EEFA /* AddContactView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FB37DB2C5FCC670070EEFA /* AddContactView.swift */; };
+		07FB38152C5FDFB70070EEFA /* Contact.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FB38142C5FDFB70070EEFA /* Contact.swift */; };
+		07FB381D2C5FDFDF0070EEFA /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07FB381C2C5FDFDF0070EEFA /* WidgetKit.framework */; };
+		07FB381F2C5FDFDF0070EEFA /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07FB381E2C5FDFDF0070EEFA /* SwiftUI.framework */; };
+		07FB38242C5FDFDF0070EEFA /* BirthdayWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FB38232C5FDFDF0070EEFA /* BirthdayWidgetBundle.swift */; };
+		07FB38282C5FDFDF0070EEFA /* BirthdayWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FB38272C5FDFDF0070EEFA /* BirthdayWidget.swift */; };
+		07FB382A2C5FDFDF0070EEFA /* AppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FB38292C5FDFDF0070EEFA /* AppIntent.swift */; };
+		07FB382C2C5FDFE00070EEFA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07FB382B2C5FDFE00070EEFA /* Assets.xcassets */; };
+		07FB38302C5FDFE00070EEFA /* BirthdayWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 07FB381A2C5FDFDF0070EEFA /* BirthdayWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		07FB38372C5FE3B80070EEFA /* Contact.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FB38362C5FE3B80070EEFA /* Contact.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		07FB382E2C5FDFE00070EEFA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 07FB37C02C5FCB350070EEFA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 07FB38192C5FDFDF0070EEFA;
+			remoteInfo = BirthdayWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		07FB37FB2C5FD1C60070EEFA /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				07FB38302C5FDFE00070EEFA /* BirthdayWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		07FB380E2C5FD5330070EEFA /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		07FB37C82C5FCB350070EEFA /* Birthdays.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Birthdays.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -20,7 +63,19 @@
 		07FB37CD2C5FCB350070EEFA /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		07FB37CF2C5FCB360070EEFA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		07FB37D22C5FCB360070EEFA /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		07FB37D92C5FCB450070EEFA /* Contacts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Contacts.swift; sourceTree = "<group>"; };
+		07FB37DB2C5FCC670070EEFA /* AddContactView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddContactView.swift; sourceTree = "<group>"; };
+		07FB38142C5FDFB70070EEFA /* Contact.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Contact.swift; sourceTree = "<group>"; };
+		07FB381A2C5FDFDF0070EEFA /* BirthdayWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = BirthdayWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		07FB381C2C5FDFDF0070EEFA /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		07FB381E2C5FDFDF0070EEFA /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		07FB38232C5FDFDF0070EEFA /* BirthdayWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirthdayWidgetBundle.swift; sourceTree = "<group>"; };
+		07FB38272C5FDFDF0070EEFA /* BirthdayWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirthdayWidget.swift; sourceTree = "<group>"; };
+		07FB38292C5FDFDF0070EEFA /* AppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntent.swift; sourceTree = "<group>"; };
+		07FB382B2C5FDFE00070EEFA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		07FB382D2C5FDFE00070EEFA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		07FB38342C5FE1DC0070EEFA /* BirthdayWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BirthdayWidgetExtension.entitlements; sourceTree = "<group>"; };
+		07FB38352C5FE21C0070EEFA /* Birthdays.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Birthdays.entitlements; sourceTree = "<group>"; };
+		07FB38362C5FE3B80070EEFA /* Contact.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Contact.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,13 +86,25 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		07FB38172C5FDFDF0070EEFA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				07FB381F2C5FDFDF0070EEFA /* SwiftUI.framework in Frameworks */,
+				07FB381D2C5FDFDF0070EEFA /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		07FB37BF2C5FCB350070EEFA = {
 			isa = PBXGroup;
 			children = (
+				07FB38342C5FE1DC0070EEFA /* BirthdayWidgetExtension.entitlements */,
 				07FB37CA2C5FCB350070EEFA /* Birthdays */,
+				07FB38202C5FDFDF0070EEFA /* BirthdayWidget */,
+				07FB381B2C5FDFDF0070EEFA /* Frameworks */,
 				07FB37C92C5FCB350070EEFA /* Products */,
 			);
 			sourceTree = "<group>";
@@ -46,6 +113,7 @@
 			isa = PBXGroup;
 			children = (
 				07FB37C82C5FCB350070EEFA /* Birthdays.app */,
+				07FB381A2C5FDFDF0070EEFA /* BirthdayWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -53,9 +121,11 @@
 		07FB37CA2C5FCB350070EEFA /* Birthdays */ = {
 			isa = PBXGroup;
 			children = (
+				07FB38352C5FE21C0070EEFA /* Birthdays.entitlements */,
 				07FB37CB2C5FCB350070EEFA /* BirthdaysApp.swift */,
 				07FB37CD2C5FCB350070EEFA /* ContentView.swift */,
-				07FB37D92C5FCB450070EEFA /* Contacts.swift */,
+				07FB38142C5FDFB70070EEFA /* Contact.swift */,
+				07FB37DB2C5FCC670070EEFA /* AddContactView.swift */,
 				07FB37CF2C5FCB360070EEFA /* Assets.xcassets */,
 				07FB37D12C5FCB360070EEFA /* Preview Content */,
 			);
@@ -70,6 +140,28 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		07FB381B2C5FDFDF0070EEFA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				07FB381C2C5FDFDF0070EEFA /* WidgetKit.framework */,
+				07FB381E2C5FDFDF0070EEFA /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		07FB38202C5FDFDF0070EEFA /* BirthdayWidget */ = {
+			isa = PBXGroup;
+			children = (
+				07FB38362C5FE3B80070EEFA /* Contact.swift */,
+				07FB38232C5FDFDF0070EEFA /* BirthdayWidgetBundle.swift */,
+				07FB38272C5FDFDF0070EEFA /* BirthdayWidget.swift */,
+				07FB38292C5FDFDF0070EEFA /* AppIntent.swift */,
+				07FB382B2C5FDFE00070EEFA /* Assets.xcassets */,
+				07FB382D2C5FDFE00070EEFA /* Info.plist */,
+			);
+			path = BirthdayWidget;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -80,15 +172,35 @@
 				07FB37C42C5FCB350070EEFA /* Sources */,
 				07FB37C52C5FCB350070EEFA /* Frameworks */,
 				07FB37C62C5FCB350070EEFA /* Resources */,
+				07FB37FB2C5FD1C60070EEFA /* Embed Foundation Extensions */,
+				07FB380E2C5FD5330070EEFA /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				07FB382F2C5FDFE00070EEFA /* PBXTargetDependency */,
 			);
 			name = Birthdays;
 			productName = Birthdays;
 			productReference = 07FB37C82C5FCB350070EEFA /* Birthdays.app */;
 			productType = "com.apple.product-type.application";
+		};
+		07FB38192C5FDFDF0070EEFA /* BirthdayWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 07FB38312C5FDFE00070EEFA /* Build configuration list for PBXNativeTarget "BirthdayWidgetExtension" */;
+			buildPhases = (
+				07FB38162C5FDFDF0070EEFA /* Sources */,
+				07FB38172C5FDFDF0070EEFA /* Frameworks */,
+				07FB38182C5FDFDF0070EEFA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BirthdayWidgetExtension;
+			productName = BirthdayWidgetExtension;
+			productReference = 07FB381A2C5FDFDF0070EEFA /* BirthdayWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -101,6 +213,9 @@
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {
 					07FB37C72C5FCB350070EEFA = {
+						CreatedOnToolsVersion = 16.0;
+					};
+					07FB38192C5FDFDF0070EEFA = {
 						CreatedOnToolsVersion = 16.0;
 					};
 				};
@@ -119,6 +234,7 @@
 			projectRoot = "";
 			targets = (
 				07FB37C72C5FCB350070EEFA /* Birthdays */,
+				07FB38192C5FDFDF0070EEFA /* BirthdayWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -133,6 +249,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		07FB38182C5FDFDF0070EEFA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				07FB382C2C5FDFE00070EEFA /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -140,13 +264,33 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07FB38152C5FDFB70070EEFA /* Contact.swift in Sources */,
 				07FB37CE2C5FCB350070EEFA /* ContentView.swift in Sources */,
 				07FB37CC2C5FCB350070EEFA /* BirthdaysApp.swift in Sources */,
-				07FB37DA2C5FCB450070EEFA /* Contacts.swift in Sources */,
+				07FB37DC2C5FCC670070EEFA /* AddContactView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		07FB38162C5FDFDF0070EEFA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				07FB38372C5FE3B80070EEFA /* Contact.swift in Sources */,
+				07FB38242C5FDFDF0070EEFA /* BirthdayWidgetBundle.swift in Sources */,
+				07FB382A2C5FDFDF0070EEFA /* AppIntent.swift in Sources */,
+				07FB38282C5FDFDF0070EEFA /* BirthdayWidget.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		07FB382F2C5FDFE00070EEFA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 07FB38192C5FDFDF0070EEFA /* BirthdayWidgetExtension */;
+			targetProxy = 07FB382E2C5FDFE00070EEFA /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		07FB37D42C5FCB360070EEFA /* Debug */ = {
@@ -273,12 +417,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Birthdays/Birthdays.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Birthdays/Preview Content\"";
 				DEVELOPMENT_TEAM = P5K444356C;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSContactsUsageDescription = "We need to access contact to get birthdates";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -302,12 +448,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Birthdays/Birthdays.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Birthdays/Preview Content\"";
 				DEVELOPMENT_TEAM = P5K444356C;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSContactsUsageDescription = "We need to access contact to get birthdates";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -320,6 +468,62 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.parpods.Birthdays;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		07FB38322C5FDFE00070EEFA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = BirthdayWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = P5K444356C;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BirthdayWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = BirthdayWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.parpods.Birthdays.BirthdayWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		07FB38332C5FDFE00070EEFA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = BirthdayWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = P5K444356C;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BirthdayWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = BirthdayWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.parpods.Birthdays.BirthdayWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -343,6 +547,15 @@
 			buildConfigurations = (
 				07FB37D72C5FCB360070EEFA /* Debug */,
 				07FB37D82C5FCB360070EEFA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		07FB38312C5FDFE00070EEFA /* Build configuration list for PBXNativeTarget "BirthdayWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				07FB38322C5FDFE00070EEFA /* Debug */,
+				07FB38332C5FDFE00070EEFA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
