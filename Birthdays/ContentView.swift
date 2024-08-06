@@ -156,43 +156,28 @@ struct ContentView: View {
                     .scrollContentBackground(.hidden)
                     .navigationTitle("Birthdays")
                     .toolbar {
-                        ToolbarItemGroup(placement: .navigationBarTrailing) {
-                            //                    Button("Add", systemImage: "plus") {
-                            //                        showingAddView = true
-                            //                    }
-                            //                    .tint(.green)
-                            
-                            Button {
-                                showingAddView = true
-                            } label: {
-                                Image(systemName: "plus")
-                                    .tint(.green)
-                                    .symbolEffect(.rotate, value: showingAddView)
-                            }
-                            
-                        }
-                        
-                        ToolbarItemGroup(placement: .navigationBarLeading) {
-                            //                    Button("Sync" ,systemImage: "person.crop.circle.fill.badge.plus") {
-                            //                        bounce.toggle()
-                            //                        fetchContacts()
-                            //                    }
-                            //                    .tint(.green)
-                            //                    .symbolEffect(.bounce, value: bounce)
-                            
-                            Button {
-                                bounce.toggle()
-                                fetchContacts()
-                            } label: {
-                                Image(systemName: "person.crop.circle.fill.badge.plus")
-                                    .tint(.green)
-                                    .symbolEffect(.bounce, value: bounce)
-                            }
-                            
-                        }
-                        
-                        
-                    }
+                                    ToolbarItem(placement: .navigationBarTrailing) {
+                                        Menu {
+                                            Button {
+                                                showingAddView = true
+                                            } label: {
+                                                Label("Add Birthday", systemImage: "person.crop.circle.fill.badge.plus")
+                                            }
+
+                                            Button {
+                                                bounce.toggle()
+                                                fetchContacts()
+                                            } label: {
+                                                Label("Sync Contacts", systemImage: "arrow.trianglehead.2.clockwise.rotate.90")
+                                            }
+                                        } label: {
+                                            Label("Menu", systemImage: "plus")
+                                               
+                                        }
+                                        .tint(.green)
+                                    }
+                                    
+                                }
                     .sheet(isPresented: $showingAddView) {
                         AddContactView()
                     }
