@@ -17,6 +17,7 @@ struct ContentView: View {
     var notifications = AddNotifications()
     
     @State private var showingAddView = false
+    @State private var bounce = false
     @State private var defaultImageData: Data = UIImage(systemName: "person")!.jpegData(compressionQuality: 1.0)!
     var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
@@ -61,50 +62,101 @@ struct ContentView: View {
             }
         )
     }
-
-
+    
+    var groupedContacts: [Int: [Contact]] {
+        Dictionary(grouping: upcomingContacts, by: { Calendar.current.component(.month, from: $0.birthday ?? Date()) })
+    }
+    
+    var months: [Int] {
+        let monthsInYear = (1...12).map { $0 }
+        let todayMonth = Calendar.current.component(.month, from: Date())
+        let upcomingMonths = monthsInYear.filter { $0 >= todayMonth }
+        let remainingMonths = monthsInYear.filter { $0 < todayMonth }
+        return upcomingMonths + remainingMonths
+    }
+    
+    
     
     var body: some View {
         NavigationStack {
-            List {
-                ForEach(upcomingContacts) { contact in
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(isBirthdayToday(birthday: contact.birthday!) ? "\(contact.name) 🎂" : contact.name)
-                                .font(.headline)
-                            Text("\(contact.birthday ?? Date.now, formatter: dateFormatter)")
-                                .font(.subheadline)
-                        }
-                        
-                    }
-                    .swipeActions(edge: .leading) {
-                                if let phoneNumber = contact.phoneNumber {
-                                    Button {
-                                        callPhoneNumber(phoneNumber)
-                                    } label: {
-                                        Label("Call", systemImage: "phone.fill")
+            ZStack {
+                
+                LinearGradient(colors: [Color(hex: "#D2FFDC"), Color(hex: "#1B231C")], startPoint: .top, endPoint: .bottom)
+                    .ignoresSafeArea()
+                
+                List {
+                                    ForEach(months, id: \.self) { month in
+                                        if let contactsForMonth = groupedContacts[month], !contactsForMonth.isEmpty {
+                                            Section(header: Text(DateFormatter().monthSymbols[month - 1])) {
+                                                ForEach(contactsForMonth) { contact in
+                                                    HStack {
+                                                        VStack(alignment: .leading) {
+                                                            Text(isBirthdayToday(birthday: contact.birthday!) ? "\(contact.name) 🎂" : contact.name)
+                                                                .font(.headline)
+                                                            Text("\(contact.birthday ?? Date.now, formatter: dateFormatter)")
+                                                                .font(.subheadline)
+                                                        }
+                                                    }
+                                                    .listRowBackground(Color.white.opacity(0.5))
+                                                    .swipeActions(edge: .leading) {
+                                                        if let phoneNumber = contact.phoneNumber {
+                                                            Button {
+                                                                callPhoneNumber(phoneNumber)
+                                                            } label: {
+                                                                Label("Call", systemImage: "phone.fill")
+                                                            }
+                                                            .tint(.green)
+                                                            
+                                                            Button {
+                                                                messagePhoneNumber(phoneNumber)
+                                                            } label: {
+                                                                Label("Message", systemImage: "message.fill")
+                                                            }
+                                                            .tint(.blue)
+                                                        }
+                                                    }
+                                                }
+                                                .onDelete(perform: deletePerson)
+                                            }
+                                        }
                                     }
-                                    .tint(.green)
-
-                                    Button {
-                                        messagePhoneNumber(phoneNumber)
-                                    } label: {
-                                        Label("Message", systemImage: "message.fill")
-                                    }
-                                    .tint(.blue)
-                                }
-                            }
-                    
-                }
-                .onDelete(perform: deletePerson)
-            }
+                                }            }
+            .scrollContentBackground(.hidden)
             .navigationTitle("Birthdays")
             .toolbar {
-                Button("Add", systemImage: "plus") {
-                    showingAddView = true
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    //                    Button("Add", systemImage: "plus") {
+                    //                        showingAddView = true
+                    //                    }
+                    //                    .tint(.green)
+                    
+                    Button {
+                        showingAddView = true
+                    } label: {
+                        Image(systemName: "plus")
+                            .tint(.green)
+                            .symbolEffect(.rotate, value: showingAddView)
+                    }
+                    
                 }
-                Button("Sync") {
-                    fetchContacts()
+                
+                ToolbarItemGroup(placement: .navigationBarLeading) {
+                    //                    Button("Sync" ,systemImage: "person.crop.circle.fill.badge.plus") {
+                    //                        bounce.toggle()
+                    //                        fetchContacts()
+                    //                    }
+                    //                    .tint(.green)
+                    //                    .symbolEffect(.bounce, value: bounce)
+                    
+                    Button {
+                        bounce.toggle()
+                        fetchContacts()
+                    } label: {
+                        Image(systemName: "person.crop.circle.fill.badge.plus")
+                            .tint(.green)
+                            .symbolEffect(.bounce, value: bounce)
+                    }
+                    
                 }
             }
             .sheet(isPresented: $showingAddView) {
@@ -114,23 +166,23 @@ struct ContentView: View {
     }
     
     func callPhoneNumber(_ phoneNumber: String) {
-            let phoneURL = URL(string: "tel://\(phoneNumber)")!
-            if UIApplication.shared.canOpenURL(phoneURL) {
-                UIApplication.shared.open(phoneURL, options: [:], completionHandler: nil)
-            } else {
-                // Handle error if the phone cannot open the URL
-                print("Cannot make a call on this device.")
-            }
+        let phoneURL = URL(string: "tel://\(phoneNumber)")!
+        if UIApplication.shared.canOpenURL(phoneURL) {
+            UIApplication.shared.open(phoneURL, options: [:], completionHandler: nil)
+        } else {
+            // Handle error if the phone cannot open the URL
+            print("Cannot make a call on this device.")
         }
+    }
     
     func messagePhoneNumber(_ phoneNumber: String) {
-            let messageURL = URL(string: "sms:\(phoneNumber)")!
-            if UIApplication.shared.canOpenURL(messageURL) {
-                UIApplication.shared.open(messageURL, options: [:], completionHandler: nil)
-            } else {
-                print("Cannot send a message on this device.")
-            }
+        let messageURL = URL(string: "sms:\(phoneNumber)")!
+        if UIApplication.shared.canOpenURL(messageURL) {
+            UIApplication.shared.open(messageURL, options: [:], completionHandler: nil)
+        } else {
+            print("Cannot send a message on this device.")
         }
+    }
     
     func isBirthdayToday(birthday: Date) -> Bool {
         let calendar = Calendar.current
@@ -179,11 +231,11 @@ struct ContentView: View {
                                 }
                                 
                                 fetchedContacts.append(newContact)
-
+                                
                                 let components = calendar.dateComponents([.month, .day], from: nextDay)
                                 let month = components.month!
                                 let day = components.day!
-
+                                
                                 modelContext.insert(newContact)
                                 notifications.addNotification(for: newContact, at: month, day: day)
                                 try? modelContext.save()
@@ -199,11 +251,18 @@ struct ContentView: View {
         }
     }
     
- 
+    
 }
 
 
 
 #Preview {
     ContentView()
+}
+
+extension Array where Element: Hashable {
+    func unique() -> [Element] {
+        var seen = Set<Element>()
+        return filter { seen.insert($0).inserted }
+    }
 }
