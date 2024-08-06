@@ -8,38 +8,95 @@
 import SwiftUI
 import SwiftData
 import Contacts
+import WidgetKit
+import UserNotifications
 
 struct ContentView: View {
     @Environment(\.modelContext) var modelContext
     @Query var contacts: [Contact]
+    var notifications = AddNotifications()
+    
     @State private var showingAddView = false
     @State private var defaultImageData: Data = UIImage(systemName: "person")!.jpegData(compressionQuality: 1.0)!
-    
     var dateFormatter: DateFormatter {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "MM/dd" // Set to display month and day only
-            return formatter
-        }
+        let formatter = DateFormatter()
+        formatter.dateFormat = "d MMMM" // Set to display month and day only
+        return formatter
+    }
+    
+    var upcomingContacts: [Contact] {
+        let today = Date()
+        let calendar = Calendar.current
+        
+        return Array(contacts.filter { $0.birthday != nil }
+            .sorted { (c1, c2) -> Bool in
+                guard let birthday1 = c1.birthday, let birthday2 = c2.birthday else {
+                    return false
+                }
+                
+                let todayComponents = calendar.dateComponents([.month, .day], from: today)
+                let todayMonth = todayComponents.month!
+                let todayDay = todayComponents.day!
+                
+                let components1 = calendar.dateComponents([.month, .day], from: birthday1)
+                let month1 = components1.month!
+                let day1 = components1.day!
+                
+                let components2 = calendar.dateComponents([.month, .day], from: birthday2)
+                let month2 = components2.month!
+                let day2 = components2.day!
+                
+                var daysFromToday1 = (month1 - todayMonth) * 30 + (day1 - todayDay)
+                var daysFromToday2 = (month2 - todayMonth) * 30 + (day2 - todayDay)
+                
+                if daysFromToday1 < 0 { // If birthday1 is before today, adjust to next year
+                    daysFromToday1 += 365
+                }
+                
+                if daysFromToday2 < 0 { // If birthday2 is before today, adjust to next year
+                    daysFromToday2 += 365
+                }
+                
+                return daysFromToday1 < daysFromToday2
+            }
+        )
+    }
+
+
     
     var body: some View {
         NavigationStack {
             List {
-                ForEach(contacts) { contact in
+                ForEach(upcomingContacts) { contact in
                     HStack {
                         VStack(alignment: .leading) {
-                            Text(contact.name)
+                            Text(isBirthdayToday(birthday: contact.birthday!) ? "\(contact.name) 🎂" : contact.name)
                                 .font(.headline)
                             Text("\(contact.birthday ?? Date.now, formatter: dateFormatter)")
                                 .font(.subheadline)
                         }
-                        Spacer()
-                        Image(uiImage: UIImage(data: contact.image)!)
-                            .resizable()
-                            .frame(width: 50, height: 50)
-                            
+                        
                     }
+                    .swipeActions(edge: .leading) {
+                                if let phoneNumber = contact.phoneNumber {
+                                    Button {
+                                        callPhoneNumber(phoneNumber)
+                                    } label: {
+                                        Label("Call", systemImage: "phone.fill")
+                                    }
+                                    .tint(.green)
+
+                                    Button {
+                                        messagePhoneNumber(phoneNumber)
+                                    } label: {
+                                        Label("Message", systemImage: "message.fill")
+                                    }
+                                    .tint(.blue)
+                                }
+                            }
+                    
                 }
-                .onDelete(perform: deleteBirthday)
+                .onDelete(perform: deletePerson)
             }
             .navigationTitle("Birthdays")
             .toolbar {
@@ -56,48 +113,93 @@ struct ContentView: View {
         }
     }
     
-    func deleteBirthday(at offsets: IndexSet) {
+    func callPhoneNumber(_ phoneNumber: String) {
+            let phoneURL = URL(string: "tel://\(phoneNumber)")!
+            if UIApplication.shared.canOpenURL(phoneURL) {
+                UIApplication.shared.open(phoneURL, options: [:], completionHandler: nil)
+            } else {
+                // Handle error if the phone cannot open the URL
+                print("Cannot make a call on this device.")
+            }
+        }
+    
+    func messagePhoneNumber(_ phoneNumber: String) {
+            let messageURL = URL(string: "sms:\(phoneNumber)")!
+            if UIApplication.shared.canOpenURL(messageURL) {
+                UIApplication.shared.open(messageURL, options: [:], completionHandler: nil)
+            } else {
+                print("Cannot send a message on this device.")
+            }
+        }
+    
+    func isBirthdayToday(birthday: Date) -> Bool {
+        let calendar = Calendar.current
+        let today = Date()
+        let todayComponents = calendar.dateComponents([.month, .day], from: today)
+        let birthdayComponents = calendar.dateComponents([.month, .day], from: birthday)
+        
+        return todayComponents.month == birthdayComponents.month && todayComponents.day == birthdayComponents.day
+    }
+    
+    func deletePerson(at offsets: IndexSet) {
         for index in offsets {
-            let contact = contacts[index]
-            modelContext.delete(contact)
+            let person = upcomingContacts[index]
+            print(index)
+            modelContext.delete(person)
+            try? modelContext.save()
+            WidgetCenter.shared.reloadAllTimelines()
+            
         }
     }
     
-    
     private func fetchContacts() {
-           let store = CNContactStore()
-           store.requestAccess(for: .contacts) { granted, error in
-               if granted {
-                   let keysToFetch = [CNContactGivenNameKey, CNContactFamilyNameKey, CNContactBirthdayKey, CNContactImageDataKey] as [CNKeyDescriptor]
-                   let request = CNContactFetchRequest(keysToFetch: keysToFetch)
-                   
-                   var fetchedContacts: [Contact] = []
-                   do {
-                       try store.enumerateContacts(with: request) { contact, stop in
-                           let name = "\(contact.givenName) \(contact.familyName)"
-                           if let birthdate = contact.birthday?.date {
-                               let image = contact.imageData
-                               let new = Contact(id: UUID(), name: name, birthday: birthdate, image: image ?? defaultImageData)
-                                   fetchedContacts.append(new)
-                                   
-                                   modelContext.insert(new)
-                                   try? modelContext.save()
-                               
-                                   
-                               
-                               
-                           }
-                       }
-                   
-                   } catch {
-                       print("Failed to fetch contacts: \(error)")
-                   }
-                   
-               } else {
-                   print("Access to contacts was denied.")
-               }
-           }
-       }
+        let store = CNContactStore()
+        store.requestAccess(for: .contacts) { granted, error in
+            if granted {
+                let keysToFetch = [CNContactGivenNameKey, CNContactFamilyNameKey, CNContactBirthdayKey, CNContactImageDataKey, CNContactPhoneNumbersKey] as [CNKeyDescriptor]
+                let request = CNContactFetchRequest(keysToFetch: keysToFetch)
+                
+                var fetchedContacts: [Contact] = []
+                do {
+                    try store.enumerateContacts(with: request) { contact, stop in
+                        let name = "\(contact.givenName) \(contact.familyName)"
+                        let number = contact.phoneNumbers.first?.value.stringValue
+                        if let birthdate = contact.birthday?.date {
+                            // Get the next day's date
+                            let calendar = Calendar.current
+                            if let nextDay = calendar.date(byAdding: .day, value: 1, to: birthdate) {
+                                // Trim white spaces from the name
+                                let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
+                                
+                                let newContact: Contact
+                                if number == nil {
+                                    newContact = Contact(id: UUID(), name: trimmedName, birthday: nextDay)
+                                } else {
+                                    newContact = Contact(id: UUID(), name: trimmedName, birthday: nextDay, phoneNumber: number)
+                                }
+                                
+                                fetchedContacts.append(newContact)
+
+                                let components = calendar.dateComponents([.month, .day], from: nextDay)
+                                let month = components.month!
+                                let day = components.day!
+
+                                modelContext.insert(newContact)
+                                notifications.addNotification(for: newContact, at: month, day: day)
+                                try? modelContext.save()
+                            }
+                        }
+                    }
+                } catch {
+                    print("Failed to fetch contacts: \(error)")
+                }
+            } else {
+                print("Access to contacts was denied.")
+            }
+        }
+    }
+    
+ 
 }
 
 
