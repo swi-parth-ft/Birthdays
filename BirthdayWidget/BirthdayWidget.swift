@@ -130,6 +130,8 @@ struct BirthdayWidgetEntryView : View {
     
     
     
+    
+    
     var body: some View {
         ZStack {
             VStack {
@@ -138,17 +140,47 @@ struct BirthdayWidgetEntryView : View {
                 }) {
                     // Display the contact whose birthday is today
                     HStack(alignment: .bottom) {
-                        VStack {
+                        VStack(alignment: .center) {
                             Text("Today is,")
                                 .font(.subheadline)
                                 .shadow(radius: 5)
-                            Text("\(todayBirthdayContact.name.trimmingCharacters(in: .whitespacesAndNewlines))'s Birthday")
+                            Text("\(todayBirthdayContact.name.trimmingCharacters(in: .whitespacesAndNewlines))'s Birthday! 🎉")
                                 .font(.system(size: 30))
                                 .fontWeight(.bold)
                                 .shadow(radius: 5)
-                        }
+                            
+                            if let phoneNumber = todayBirthdayContact.phoneNumber {
+                                HStack(alignment: .top) {
+                                    Link(destination: URL(string: "myapp://call?phoneNumber=\(phoneNumber)")!) {
+                                        Image(systemName: "phone.fill")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(width: 18, height: 18) // Adjust the size of the icon
+                                            .padding(10)
+                                            .background(Color.white.opacity(0.5))
+                                            .foregroundColor(.green) // Color of the icon
+                                            .clipShape(Circle())
+                                    }
+                                    
+                                    
+                                    Link(destination: URL(string: "myapp://message?phoneNumber=\(phoneNumber)")!) {
+                                        Image(systemName: "message.fill")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(width: 18, height: 18) // Adjust the size of the icon
+                                            .padding(10)
+                                            .background(Color.white.opacity(0.5))
+                                            .foregroundColor(.blue) // Color of the icon
+                                            .clipShape(Circle())
+                                    }
+                                    
+                                }
+                            } else {
+                                Text("No phone number available")
+                                    .foregroundColor(.gray)
+                            }                        }
                     }
-                    .padding([.top, .bottom], 0.1)
+                    .padding([.top, .bottom], 2)
                     
                     Spacer()
                     
@@ -156,9 +188,9 @@ struct BirthdayWidgetEntryView : View {
                     ForEach(Array(upcomingContacts.prefix(2).enumerated()), id: \.element.id) { index, con in
                         if con.id != todayBirthdayContact.id {
                             HStack(alignment: .bottom) {
-                                Text(con.name)
-                                Spacer()
-                                Text(birthdayText(for: con.birthday ?? Date()))
+                                Text("Next, \(con.name)'s on \(birthdayText(for: con.birthday ?? Date()))")
+                                    .foregroundStyle(.secondary)
+                                
                             }
                             
                         }
@@ -167,23 +199,23 @@ struct BirthdayWidgetEntryView : View {
                     Text("Next Birthdays, 🎈")
                     Spacer()
                     VStack(alignment: .leading, spacing: 2) {
-                
-                    ForEach(Array(upcomingContacts.enumerated()), id: \.element.id) { index, con in
-                      
-                        Text("\(con.name)'s,  \(birthdayText(for: con.birthday ?? Date()))")
-                            .font(.system(size: 25 - CGFloat(index * 5)))
-                            .fontWeight(.semibold)
-                            .opacity(1 - (0.75 * Double(index) / Double(upcomingContacts.count - 1)))
-                            .shadow(radius: 5)
-                            .alignmentGuide(.leading) { d in d[.leading] }
                         
-                        if index < upcomingContacts.count - 1 {
-                                        Divider()
-                                            .background(Color.gray)
-                                           
-                                    }
+                        ForEach(Array(upcomingContacts.enumerated()), id: \.element.id) { index, con in
+                            
+                            Text("\(con.name)'s,  \(birthdayText(for: con.birthday ?? Date()))")
+                                .font(.system(size: 25 - CGFloat(index * 5)))
+                                .fontWeight(.semibold)
+                                .opacity(1 - (0.75 * Double(index) / Double(upcomingContacts.count - 1)))
+                                .shadow(radius: 5)
+                                .alignmentGuide(.leading) { d in d[.leading] }
+                            
+                            if index < upcomingContacts.count - 1 {
+                                Divider()
+                                    .background(Color.gray)
+                                
+                            }
+                        }
                     }
-                }
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
@@ -289,7 +321,7 @@ extension Color {
         default:
             (a, r, g, b) = (255, 0, 0, 0)
         }
-
+        
         self.init(
             .sRGB,
             red: Double(r) / 255,

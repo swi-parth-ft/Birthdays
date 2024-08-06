@@ -76,8 +76,24 @@ struct ContentView: View {
                                 .font(.subheadline)
                         }
                         
-                        Text(contact.phoneNumber ?? "N/A")
                     }
+                    .swipeActions(edge: .leading) {
+                                if let phoneNumber = contact.phoneNumber {
+                                    Button {
+                                        callPhoneNumber(phoneNumber)
+                                    } label: {
+                                        Label("Call", systemImage: "phone.fill")
+                                    }
+                                    .tint(.green)
+
+                                    Button {
+                                        messagePhoneNumber(phoneNumber)
+                                    } label: {
+                                        Label("Message", systemImage: "message.fill")
+                                    }
+                                    .tint(.blue)
+                                }
+                            }
                     
                 }
                 .onDelete(perform: deletePerson)
@@ -96,6 +112,25 @@ struct ContentView: View {
             }
         }
     }
+    
+    func callPhoneNumber(_ phoneNumber: String) {
+            let phoneURL = URL(string: "tel://\(phoneNumber)")!
+            if UIApplication.shared.canOpenURL(phoneURL) {
+                UIApplication.shared.open(phoneURL, options: [:], completionHandler: nil)
+            } else {
+                // Handle error if the phone cannot open the URL
+                print("Cannot make a call on this device.")
+            }
+        }
+    
+    func messagePhoneNumber(_ phoneNumber: String) {
+            let messageURL = URL(string: "sms:\(phoneNumber)")!
+            if UIApplication.shared.canOpenURL(messageURL) {
+                UIApplication.shared.open(messageURL, options: [:], completionHandler: nil)
+            } else {
+                print("Cannot send a message on this device.")
+            }
+        }
     
     func isBirthdayToday(birthday: Date) -> Bool {
         let calendar = Calendar.current
