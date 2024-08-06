@@ -142,7 +142,7 @@ struct BirthdayWidgetEntryView : View {
                             Text("Today is,")
                                 .font(.subheadline)
                                 .shadow(radius: 5)
-                            Text("\(todayBirthdayContact.name)'s Birthday")
+                            Text("\(todayBirthdayContact.name.trimmingCharacters(in: .whitespacesAndNewlines))'s Birthday")
                                 .font(.system(size: 30))
                                 .fontWeight(.bold)
                                 .shadow(radius: 5)

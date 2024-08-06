@@ -124,20 +124,23 @@ struct ContentView: View {
                     try store.enumerateContacts(with: request) { contact, stop in
                         let name = "\(contact.givenName) \(contact.familyName)"
                         if let birthdate = contact.birthday?.date {
-                            let new = Contact(id: UUID(), name: name, birthday: birthdate)
-                            fetchedContacts.append(new)
-                            
+                            // Get the next day's date
                             let calendar = Calendar.current
-                            let components = calendar.dateComponents([.month, .day], from: new.birthday!)
-                            let month = components.month!
-                            let day = components.day!
-                            
-                            modelContext.insert(new)
-                            addNotification(for: new, at: month, day: day)
-                            try? modelContext.save()
-                            
-                            
-                            
+                            if let nextDay = calendar.date(byAdding: .day, value: 1, to: birthdate) {
+                                // Trim white spaces from the name
+                                let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
+                                
+                                let newContact = Contact(id: UUID(), name: trimmedName, birthday: nextDay)
+                                fetchedContacts.append(newContact)
+
+                                let components = calendar.dateComponents([.month, .day], from: nextDay)
+                                let month = components.month!
+                                let day = components.day!
+
+                                modelContext.insert(newContact)
+                                addNotification(for: newContact, at: month, day: day)
+                                try? modelContext.save()
+                            }
                         }
                     }
                 } catch {
