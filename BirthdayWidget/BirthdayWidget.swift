@@ -81,7 +81,7 @@ struct BirthdayWidgetEntryView : View {
                 return (birthdayComponents.month! > todayComponents.month!) ||
                 (birthdayComponents.month! == todayComponents.month! && birthdayComponents.day! >= todayComponents.day!)
             }
-            .prefix(5))
+            .prefix(4))
     }
     
     func birthdayText(for date: Date) -> String {
@@ -164,19 +164,27 @@ struct BirthdayWidgetEntryView : View {
                         }
                     }
                 } else {
-                    // Display the usual five contacts
+                    Text("Next Birthdays, 🎈")
+                    Spacer()
+                    VStack(alignment: .leading, spacing: 2) {
+                
                     ForEach(Array(upcomingContacts.enumerated()), id: \.element.id) { index, con in
-                        HStack(alignment: .bottom) {
-                            Text(con.name)
-                                .font(.system(size: 20 - CGFloat(index * 2)))
-                                .fontWeight(index == 0 ? .bold : (index == 1 ? .semibold : (index == 2 ? .medium : (index == 3 ? .regular : (index == 4 ? .light : .thin)))))
-                            Spacer()
-                            Text(birthdayText(for: con.birthday ?? Date()))
-                                .font(.system(size: 20 - CGFloat(index * 2)))
-                                .fontWeight(index == 0 ? .bold : (index == 1 ? .semibold : (index == 2 ? .medium : (index == 3 ? .regular : (index == 4 ? .light : .thin)))))
-                        }
-                        .padding([.top, .bottom], 0.1)
+                      
+                        Text("\(con.name)'s,  \(birthdayText(for: con.birthday ?? Date()))")
+                            .font(.system(size: 25 - CGFloat(index * 5)))
+                            .fontWeight(.semibold)
+                            .opacity(1 - (0.75 * Double(index) / Double(upcomingContacts.count - 1)))
+                            .shadow(radius: 5)
+                            .alignmentGuide(.leading) { d in d[.leading] }
+                        
+                        if index < upcomingContacts.count - 1 {
+                                        Divider()
+                                            .background(Color.gray)
+                                           
+                                    }
                     }
+                }
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
             .padding()
@@ -196,7 +204,7 @@ struct BirthdayWidgetEntryView : View {
                                 .edgesIgnoringSafeArea(.all)
                         )
                 } else {
-                    LinearGradient(colors: [.pink, .orange, .yellow], startPoint: .topTrailing, endPoint: .bottomLeading)
+                    LinearGradient(colors: [Color(hex: "#D2FFDC"), Color(hex: "#1B231C")], startPoint: .top, endPoint: .bottom)
                 }
             }
         }
@@ -247,7 +255,7 @@ struct BirthdayWidgetEntryView_Previews: PreviewProvider {
         let entry = SimpleEntry(date: .now, configuration: .smiley)
         let view = BirthdayWidgetEntryView(entry: entry)
             .previewContext(WidgetPreviewContext(family: .systemSmall))
-        
+        return view
         // Simulate providing data for the preview
         
     }
@@ -265,3 +273,29 @@ extension View {
     }
 }
 
+extension Color {
+    init(hex: String) {
+        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var int: UInt64 = 0
+        Scanner(string: hex).scanHexInt64(&int)
+        let a, r, g, b: UInt64
+        switch hex.count {
+        case 3: // RGB (12-bit)
+            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
+        case 6: // RGB (24-bit)
+            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
+        case 8: // ARGB (32-bit)
+            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+        default:
+            (a, r, g, b) = (255, 0, 0, 0)
+        }
+
+        self.init(
+            .sRGB,
+            red: Double(r) / 255,
+            green: Double(g) / 255,
+            blue: Double(b) / 255,
+            opacity: Double(a) / 255
+        )
+    }
+}
