@@ -134,9 +134,11 @@ struct BirthdayWidgetEntryView : View {
                                VStack {
                                    Text("Today is,")
                                        .font(.subheadline)
+                                       .shadow(radius: 5)
                                    Text("\(todayBirthdayContact.name)'s Birthday")
                                        .font(.system(size: 30))
                                        .fontWeight(.bold)
+                                       .shadow(radius: 5)
                                }
                            }
                            .padding([.top, .bottom], 0.1)
@@ -173,9 +175,24 @@ struct BirthdayWidgetEntryView : View {
                    .padding()
                    .foregroundColor(.white)
                }
-        .widgetBackground {
-            LinearGradient(colors: [.pink, .orange, .yellow], startPoint: .topTrailing, endPoint: .bottomLeading)
-        }
+       
+                .widgetBackground {
+                    Group {
+                                if upcomingContacts.contains(where: { Calendar.current.isDateInToday($0.birthday!) }) {
+                                    Image("BirthdayBackground")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .scaledToFill()
+                                        .clipped()
+                                        .overlay(
+                                                               Color.black.opacity(0.4)
+                                                                   .edgesIgnoringSafeArea(.all)
+                                                           )
+                                } else {
+                                    LinearGradient(colors: [.pink, .orange, .yellow], startPoint: .topTrailing, endPoint: .bottomLeading)
+                                }
+                            }
+                }
         
     }
 }
