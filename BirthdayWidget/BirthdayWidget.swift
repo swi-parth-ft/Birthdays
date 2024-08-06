@@ -125,24 +125,54 @@ struct BirthdayWidgetEntryView : View {
     
     var body: some View {
         ZStack {
-            
-            VStack {
-                ForEach(Array(upcomingContacts.enumerated()), id: \.element.id) { index, con in
-                    HStack(alignment: .bottom) {
-                        Text(con.name)
-                            .font(.system(size: 20 - CGFloat(index * 2)))
-                            .fontWeight(index == 0 ? .bold : (index == 1 ? .semibold : (index == 2 ? .medium : (index == 3 ? .regular : (index == 4 ? .light : .thin)))))
-                        Spacer()
-                        Text(birthdayText(for: con.birthday ?? Date()))
-                            .font(.system(size: 20 - CGFloat(index * 2)))
-                            .fontWeight(index == 0 ? .bold : (index == 1 ? .semibold : (index == 2 ? .medium : (index == 3 ? .regular : (index == 4 ? .light : .thin)))))
-                    }
-                    .padding([.top, .bottom], 0.1)
-                }
-            }
-            .padding()
-            .foregroundColor(.white)
-        }
+                   VStack {
+                       if let todayBirthdayContact = upcomingContacts.first(where: {
+                           Calendar.current.isDateInToday($0.birthday!)
+                       }) {
+                           // Display the contact whose birthday is today
+                           HStack(alignment: .bottom) {
+                               VStack {
+                                   Text("Today is,")
+                                       .font(.subheadline)
+                                   Text("\(todayBirthdayContact.name)'s Birthday")
+                                       .font(.system(size: 30))
+                                       .fontWeight(.bold)
+                               }
+                           }
+                           .padding([.top, .bottom], 0.1)
+                           
+                           Spacer()
+                           
+                           // Display the next two contacts
+                           ForEach(Array(upcomingContacts.prefix(2).enumerated()), id: \.element.id) { index, con in
+                               if con.id != todayBirthdayContact.id {
+                                   HStack(alignment: .bottom) {
+                                       Text(con.name)
+                                       Spacer()
+                                       Text(birthdayText(for: con.birthday ?? Date()))
+                                   }
+                                   
+                               }
+                           }
+                       } else {
+                           // Display the usual five contacts
+                           ForEach(Array(upcomingContacts.enumerated()), id: \.element.id) { index, con in
+                               HStack(alignment: .bottom) {
+                                   Text(con.name)
+                                       .font(.system(size: 20 - CGFloat(index * 2)))
+                                       .fontWeight(index == 0 ? .bold : (index == 1 ? .semibold : (index == 2 ? .medium : (index == 3 ? .regular : (index == 4 ? .light : .thin)))))
+                                   Spacer()
+                                   Text(birthdayText(for: con.birthday ?? Date()))
+                                       .font(.system(size: 20 - CGFloat(index * 2)))
+                                       .fontWeight(index == 0 ? .bold : (index == 1 ? .semibold : (index == 2 ? .medium : (index == 3 ? .regular : (index == 4 ? .light : .thin)))))
+                               }
+                               .padding([.top, .bottom], 0.1)
+                           }
+                       }
+                   }
+                   .padding()
+                   .foregroundColor(.white)
+               }
         .widgetBackground {
             LinearGradient(colors: [.pink, .orange, .yellow], startPoint: .topTrailing, endPoint: .bottomLeading)
         }
@@ -156,7 +186,7 @@ struct BirthdayWidget: Widget {
     var body: some WidgetConfiguration {
         AppIntentConfiguration(kind: kind, intent: ConfigurationAppIntent.self, provider: Provider()) { entry in
             BirthdayWidgetEntryView(entry: entry)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)    // << here !!q
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .modelContainer(for: [Contact.self])
         }
         
@@ -179,12 +209,27 @@ extension ConfigurationAppIntent {
     }
 }
 
-#Preview(as: .systemSmall) {
-    BirthdayWidget()
-} timeline: {
-    SimpleEntry(date: .now, configuration: .smiley)
-    SimpleEntry(date: .now, configuration: .starEyes)
+struct BirthdayWidgetEntryView_Previews: PreviewProvider {
+    static var previews: some View {
+        let today = Date()
+        let mockContacts = [
+            Contact(id: UUID(), name: "Alice", birthday: today),
+            Contact(id: UUID(), name: "Bob", birthday: Calendar.current.date(byAdding: .day, value: 1, to: today)!),
+            Contact(id: UUID(), name: "Charlie", birthday: Calendar.current.date(byAdding: .day, value: 2, to: today)!),
+            Contact(id: UUID(), name: "David", birthday: Calendar.current.date(byAdding: .day, value: 3, to: today)!),
+            Contact(id: UUID(), name: "Eve", birthday: Calendar.current.date(byAdding: .day, value: 4, to: today)!)
+        ]
+
+        let entry = SimpleEntry(date: .now, configuration: .smiley)
+                let view = BirthdayWidgetEntryView(entry: entry)
+                    .previewContext(WidgetPreviewContext(family: .systemSmall))
+                
+                // Simulate providing data for the preview
+              
+    }
 }
+
+
 
 extension View {
     @ViewBuilder func widgetBackground<T: View>(@ViewBuilder content: () -> T) -> some View {
