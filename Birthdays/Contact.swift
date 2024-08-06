@@ -10,14 +10,19 @@ import SwiftData
 @Model
 class Contact: Identifiable {
     var id = UUID()
-    @Attribute(.unique) var name: String
-    var birthday: Date?
+        @Attribute(.unique) var name: String
+        var birthday: Date?
+        var phoneNumber: String?
+
+    init(id: UUID = UUID(), name: String, birthday: Date, phoneNumber: String? = nil) {
+            self.id = id
+            self.name = name
+            self.birthday = birthday
+            self.phoneNumber = phoneNumber
+        }
+
     
-    init(id: UUID = UUID(), name: String, birthday: Date) {
-        self.id = id
-        self.name = name
-        self.birthday = birthday
-    }
+  
     
     static var upcomingBirthdaySortDescriptor: NSSortDescriptor {
             return NSSortDescriptor(key: "birthday", ascending: true, comparator: { (date1, date2) -> ComparisonResult in

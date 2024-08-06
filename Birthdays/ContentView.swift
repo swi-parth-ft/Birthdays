@@ -14,6 +14,8 @@ import UserNotifications
 struct ContentView: View {
     @Environment(\.modelContext) var modelContext
     @Query var contacts: [Contact]
+    var notifications = AddNotifications()
+    
     @State private var showingAddView = false
     @State private var defaultImageData: Data = UIImage(systemName: "person")!.jpegData(compressionQuality: 1.0)!
     var dateFormatter: DateFormatter {
@@ -66,13 +68,16 @@ struct ContentView: View {
         NavigationStack {
             List {
                 ForEach(upcomingContacts) { contact in
-               
+                    HStack {
                         VStack(alignment: .leading) {
                             Text(isBirthdayToday(birthday: contact.birthday!) ? "\(contact.name) 🎂" : contact.name)
                                 .font(.headline)
                             Text("\(contact.birthday ?? Date.now, formatter: dateFormatter)")
                                 .font(.subheadline)
                         }
+                        
+                        Text(contact.phoneNumber ?? "N/A")
+                    }
                     
                 }
                 .onDelete(perform: deletePerson)
@@ -116,13 +121,14 @@ struct ContentView: View {
         let store = CNContactStore()
         store.requestAccess(for: .contacts) { granted, error in
             if granted {
-                let keysToFetch = [CNContactGivenNameKey, CNContactFamilyNameKey, CNContactBirthdayKey, CNContactImageDataKey] as [CNKeyDescriptor]
+                let keysToFetch = [CNContactGivenNameKey, CNContactFamilyNameKey, CNContactBirthdayKey, CNContactImageDataKey, CNContactPhoneNumbersKey] as [CNKeyDescriptor]
                 let request = CNContactFetchRequest(keysToFetch: keysToFetch)
                 
                 var fetchedContacts: [Contact] = []
                 do {
                     try store.enumerateContacts(with: request) { contact, stop in
                         let name = "\(contact.givenName) \(contact.familyName)"
+                        let number = contact.phoneNumbers.first?.value.stringValue
                         if let birthdate = contact.birthday?.date {
                             // Get the next day's date
                             let calendar = Calendar.current
@@ -130,7 +136,13 @@ struct ContentView: View {
                                 // Trim white spaces from the name
                                 let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
                                 
-                                let newContact = Contact(id: UUID(), name: trimmedName, birthday: nextDay)
+                                let newContact: Contact
+                                if number == nil {
+                                    newContact = Contact(id: UUID(), name: trimmedName, birthday: nextDay)
+                                } else {
+                                    newContact = Contact(id: UUID(), name: trimmedName, birthday: nextDay, phoneNumber: number)
+                                }
+                                
                                 fetchedContacts.append(newContact)
 
                                 let components = calendar.dateComponents([.month, .day], from: nextDay)
@@ -138,7 +150,7 @@ struct ContentView: View {
                                 let day = components.day!
 
                                 modelContext.insert(newContact)
-                                addNotification(for: newContact, at: month, day: day)
+                                notifications.addNotification(for: newContact, at: month, day: day)
                                 try? modelContext.save()
                             }
                         }
@@ -152,40 +164,7 @@ struct ContentView: View {
         }
     }
     
-    func addNotification(for contact: Contact, at month: Int, day: Int) {
-        let center = UNUserNotificationCenter.current()
-        
-        let addRequest = {
-            let content = UNMutableNotificationContent()
-            content.title = "It's \(contact.name)'s Birthday today! 🎂"
-            content.body = "let's pop some confetti 🎉"
-            content.sound = UNNotificationSound.default
-            
-            var dateComponents = DateComponents()
-            dateComponents.month = month
-            dateComponents.day = day
-            dateComponents.hour = 10
-            dateComponents.minute = 9
-            let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
-            
-            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-            center.add(request)
-        }
-        
-        center.getNotificationSettings { settings in
-            if settings.authorizationStatus == .authorized {
-                addRequest()
-            } else {
-                center.requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
-                    if success {
-                        addRequest()
-                    } else if let error {
-                        print(error.localizedDescription)
-                    }
-                }
-            }
-        }
-    }
+ 
 }
 
 
