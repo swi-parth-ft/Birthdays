@@ -18,6 +18,7 @@ struct ContentView: View {
     
     @State private var showingAddView = false
     @State private var bounce = false
+    @State private var searchText = ""
     @State private var defaultImageData: Data = UIImage(systemName: "person")!.jpegData(compressionQuality: 1.0)!
     var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
@@ -76,6 +77,20 @@ struct ContentView: View {
     }
     
     
+    var filteredContacts: [Int: [Contact]] {
+            if searchText.isEmpty {
+                return groupedContacts
+            } else {
+                var filtered = [Int: [Contact]]()
+                for (month, contacts) in groupedContacts {
+                    filtered[month] = contacts.filter { contact in
+                        contact.name.lowercased().contains(searchText.lowercased())
+                    }
+                }
+                return filtered
+            }
+        }
+    
     
     var body: some View {
         NavigationStack {
@@ -88,7 +103,7 @@ struct ContentView: View {
                 } else {
                     List {
                         ForEach(months, id: \.self) { month in
-                            if let contactsForMonth = groupedContacts[month], !contactsForMonth.isEmpty {
+                            if let contactsForMonth = filteredContacts[month], !contactsForMonth.isEmpty {
                                 Section(header: Text(DateFormatter().monthSymbols[month - 1])) {
                                     ForEach(contactsForMonth) { contact in
                                         HStack {
@@ -135,6 +150,7 @@ struct ContentView: View {
                             }
                         }
                     }
+                    .searchable(text: $searchText, prompt: "Search for a item")
                 }
                 }
                     .scrollContentBackground(.hidden)
@@ -174,6 +190,8 @@ struct ContentView: View {
                             }
                             
                         }
+                        
+                        
                     }
                     .sheet(isPresented: $showingAddView) {
                         AddContactView()
