@@ -25,10 +25,8 @@ struct BirthdaysApp: App {
                                        let queryItems = components.queryItems,
                                        let phoneNumber = queryItems.first(where: { $0.name == "phoneNumber" })?.value {
                                         if host == "call" {
-                                         //   contactToCall = phoneNumber
                                             callPhoneNumber(phoneNumber)
                                         } else if host == "message" {
-                                         //   contactToMessage = phoneNumber
                                             messagePhoneNumber(phoneNumber)
                                         }
                                     }
