@@ -74,36 +74,79 @@ struct BirthdayWidgetEntryView : View {
                 return (birthdayComponents.month! > todayComponents.month!) ||
                 (birthdayComponents.month! == todayComponents.month! && birthdayComponents.day! >= todayComponents.day!)
             }
-            .prefix(6))
+            .prefix(5))
     }
+    
+    func birthdayText(for date: Date) -> String {
+            let calendar = Calendar.current
+            let today = Date()
+            let tomorrow = calendar.date(byAdding: .day, value: 1, to: today)!
+            let startOfWeek = calendar.nextDate(after: today, matching: .init(weekday: calendar.firstWeekday), matchingPolicy: .nextTime)!
+            let endOfWeek = calendar.date(byAdding: .day, value: 6, to: startOfWeek)!
+            
+            let birthdayComponents = calendar.dateComponents([.month, .day], from: date)
+            let todayComponents = calendar.dateComponents([.month, .day], from: today)
+            let tomorrowComponents = calendar.dateComponents([.month, .day], from: tomorrow)
+            
+            if birthdayComponents == todayComponents {
+                return "Today"
+            } else if birthdayComponents == tomorrowComponents {
+                return "Tomorrow"
+            } else if isDateInThisWeek(date) {
+                let weekday = calendar.component(.weekday, from: today)
+                let targetDate = calendar.nextDate(after: today, matching: birthdayComponents, matchingPolicy: .nextTimePreservingSmallerComponents) ?? date
+                let targetWeekday = calendar.component(.weekday, from: targetDate)
+                return calendar.weekdaySymbols[targetWeekday - 1]
+            } else {
+                return dateFormatter.string(from: date)
+            }
+        }
+    
+    func isDateInThisWeek(_ date: Date) -> Bool {
+            let calendar = Calendar.current
+            let today = Date()
+            
+            guard let startOfWeek = calendar.dateInterval(of: .weekOfYear, for: today)?.start else {
+                return false
+            }
+            
+            let startOfWeekComponents = calendar.dateComponents([.month, .day], from: startOfWeek)
+            let endOfWeek = calendar.date(byAdding: .day, value: 6, to: startOfWeek)!
+            let endOfWeekComponents = calendar.dateComponents([.month, .day], from: endOfWeek)
+            let dateComponents = calendar.dateComponents([.month, .day], from: date)
+            
+            return (dateComponents.month! > startOfWeekComponents.month! ||
+                    (dateComponents.month! == startOfWeekComponents.month! && dateComponents.day! >= startOfWeekComponents.day!)) &&
+                   (dateComponents.month! < endOfWeekComponents.month! ||
+                    (dateComponents.month! == endOfWeekComponents.month! && dateComponents.day! <= endOfWeekComponents.day!))
+        }
+    
+    
     
     var body: some View {
         ZStack {
             
-            RoundedRectangle(cornerRadius: 22)
-                .fill(.black.opacity(0.4))
-                .shadow(radius: 5)
-                .padding([.bottom, .top], 5)
-
-            
-            
             VStack {
-                ForEach(upcomingContacts) { con in
-                    HStack {
+                ForEach(Array(upcomingContacts.enumerated()), id: \.element.id) { index, con in
+                    HStack(alignment: .bottom) {
                         Text(con.name)
+                            .font(.system(size: 20 - CGFloat(index * 2)))
+                            .fontWeight(index == 0 ? .bold : (index == 1 ? .semibold : (index == 2 ? .medium : (index == 3 ? .regular : (index == 4 ? .light : .thin)))))
                         Spacer()
-                        Text(con.birthday ?? Date(), formatter: dateFormatter)
+                        Text(birthdayText(for: con.birthday ?? Date()))
+                            .font(.system(size: 20 - CGFloat(index * 2)))
+                            .fontWeight(index == 0 ? .bold : (index == 1 ? .semibold : (index == 2 ? .medium : (index == 3 ? .regular : (index == 4 ? .light : .thin)))))
                     }
-                    // Add padding inside the HStack if needed
+                    .padding([.top, .bottom], 0.1)
                 }
             }
             .padding()
             .foregroundColor(.white)
         }
         .widgetBackground {
-            LinearGradient(colors: [.orange, .black, .black], startPoint: .bottom, endPoint: .top)
+            LinearGradient(colors: [.pink, .orange, .yellow], startPoint: .topTrailing, endPoint: .bottomLeading)
         }
-          
+        
     }
 }
 
@@ -152,3 +195,4 @@ extension View {
         }
     }
 }
+
