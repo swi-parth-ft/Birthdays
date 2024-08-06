@@ -20,13 +20,20 @@ struct Provider: AppIntentTimelineProvider {
     
     func timeline(for configuration: ConfigurationAppIntent, in context: Context) async -> Timeline<SimpleEntry> {
         var entries: [SimpleEntry] = []
-        // Generate a timeline consisting of five entries an hour apart, starting from the current date.
+        
+        // Generate a timeline consisting of entries that update every day at midnight
         let currentDate = Date()
-        for hourOffset in 0 ..< 5 {
-            let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-            let entry = SimpleEntry(date: entryDate, configuration: configuration)
-            entries.append(entry)
-        }
+        let calendar = Calendar.current
+        let nextMidnight = calendar.nextDate(after: currentDate, matching: DateComponents(hour: 0, minute: 0, second: 0), matchingPolicy: .nextTime)!
+        
+        // Create an entry for the current time
+        let currentEntry = SimpleEntry(date: currentDate, configuration: configuration)
+        entries.append(currentEntry)
+        
+        // Create an entry for the next midnight
+        let midnightEntry = SimpleEntry(date: nextMidnight, configuration: configuration)
+        entries.append(midnightEntry)
+        
         return Timeline(entries: entries, policy: .atEnd)
     }
 }
@@ -78,121 +85,121 @@ struct BirthdayWidgetEntryView : View {
     }
     
     func birthdayText(for date: Date) -> String {
-            let calendar = Calendar.current
-            let today = Date()
-            let tomorrow = calendar.date(byAdding: .day, value: 1, to: today)!
-            let startOfWeek = calendar.nextDate(after: today, matching: .init(weekday: calendar.firstWeekday), matchingPolicy: .nextTime)!
-            let endOfWeek = calendar.date(byAdding: .day, value: 6, to: startOfWeek)!
-            
-            let birthdayComponents = calendar.dateComponents([.month, .day], from: date)
-            let todayComponents = calendar.dateComponents([.month, .day], from: today)
-            let tomorrowComponents = calendar.dateComponents([.month, .day], from: tomorrow)
-            
-            if birthdayComponents == todayComponents {
-                return "Today"
-            } else if birthdayComponents == tomorrowComponents {
-                return "Tomorrow"
-            } else if isDateInThisWeek(date) {
-                let weekday = calendar.component(.weekday, from: today)
-                let targetDate = calendar.nextDate(after: today, matching: birthdayComponents, matchingPolicy: .nextTimePreservingSmallerComponents) ?? date
-                let targetWeekday = calendar.component(.weekday, from: targetDate)
-                return calendar.weekdaySymbols[targetWeekday - 1]
-            } else {
-                return dateFormatter.string(from: date)
-            }
+        let calendar = Calendar.current
+        let today = Date()
+        let tomorrow = calendar.date(byAdding: .day, value: 1, to: today)!
+        let startOfWeek = calendar.nextDate(after: today, matching: .init(weekday: calendar.firstWeekday), matchingPolicy: .nextTime)!
+        let endOfWeek = calendar.date(byAdding: .day, value: 6, to: startOfWeek)!
+        
+        let birthdayComponents = calendar.dateComponents([.month, .day], from: date)
+        let todayComponents = calendar.dateComponents([.month, .day], from: today)
+        let tomorrowComponents = calendar.dateComponents([.month, .day], from: tomorrow)
+        
+        if birthdayComponents == todayComponents {
+            return "Today"
+        } else if birthdayComponents == tomorrowComponents {
+            return "Tomorrow"
+        } else if isDateInThisWeek(date) {
+            let weekday = calendar.component(.weekday, from: today)
+            let targetDate = calendar.nextDate(after: today, matching: birthdayComponents, matchingPolicy: .nextTimePreservingSmallerComponents) ?? date
+            let targetWeekday = calendar.component(.weekday, from: targetDate)
+            return calendar.weekdaySymbols[targetWeekday - 1]
+        } else {
+            return dateFormatter.string(from: date)
         }
+    }
     
     func isDateInThisWeek(_ date: Date) -> Bool {
-            let calendar = Calendar.current
-            let today = Date()
-            
-            guard let startOfWeek = calendar.dateInterval(of: .weekOfYear, for: today)?.start else {
-                return false
-            }
-            
-            let startOfWeekComponents = calendar.dateComponents([.month, .day], from: startOfWeek)
-            let endOfWeek = calendar.date(byAdding: .day, value: 6, to: startOfWeek)!
-            let endOfWeekComponents = calendar.dateComponents([.month, .day], from: endOfWeek)
-            let dateComponents = calendar.dateComponents([.month, .day], from: date)
-            
-            return (dateComponents.month! > startOfWeekComponents.month! ||
-                    (dateComponents.month! == startOfWeekComponents.month! && dateComponents.day! >= startOfWeekComponents.day!)) &&
-                   (dateComponents.month! < endOfWeekComponents.month! ||
-                    (dateComponents.month! == endOfWeekComponents.month! && dateComponents.day! <= endOfWeekComponents.day!))
+        let calendar = Calendar.current
+        let today = Date()
+        
+        guard let startOfWeek = calendar.dateInterval(of: .weekOfYear, for: today)?.start else {
+            return false
         }
+        
+        let startOfWeekComponents = calendar.dateComponents([.month, .day], from: startOfWeek)
+        let endOfWeek = calendar.date(byAdding: .day, value: 6, to: startOfWeek)!
+        let endOfWeekComponents = calendar.dateComponents([.month, .day], from: endOfWeek)
+        let dateComponents = calendar.dateComponents([.month, .day], from: date)
+        
+        return (dateComponents.month! > startOfWeekComponents.month! ||
+                (dateComponents.month! == startOfWeekComponents.month! && dateComponents.day! >= startOfWeekComponents.day!)) &&
+        (dateComponents.month! < endOfWeekComponents.month! ||
+         (dateComponents.month! == endOfWeekComponents.month! && dateComponents.day! <= endOfWeekComponents.day!))
+    }
     
     
     
     var body: some View {
         ZStack {
-                   VStack {
-                       if let todayBirthdayContact = upcomingContacts.first(where: {
-                           Calendar.current.isDateInToday($0.birthday!)
-                       }) {
-                           // Display the contact whose birthday is today
-                           HStack(alignment: .bottom) {
-                               VStack {
-                                   Text("Today is,")
-                                       .font(.subheadline)
-                                       .shadow(radius: 5)
-                                   Text("\(todayBirthdayContact.name)'s Birthday")
-                                       .font(.system(size: 30))
-                                       .fontWeight(.bold)
-                                       .shadow(radius: 5)
-                               }
-                           }
-                           .padding([.top, .bottom], 0.1)
-                           
-                           Spacer()
-                           
-                           // Display the next two contacts
-                           ForEach(Array(upcomingContacts.prefix(2).enumerated()), id: \.element.id) { index, con in
-                               if con.id != todayBirthdayContact.id {
-                                   HStack(alignment: .bottom) {
-                                       Text(con.name)
-                                       Spacer()
-                                       Text(birthdayText(for: con.birthday ?? Date()))
-                                   }
-                                   
-                               }
-                           }
-                       } else {
-                           // Display the usual five contacts
-                           ForEach(Array(upcomingContacts.enumerated()), id: \.element.id) { index, con in
-                               HStack(alignment: .bottom) {
-                                   Text(con.name)
-                                       .font(.system(size: 20 - CGFloat(index * 2)))
-                                       .fontWeight(index == 0 ? .bold : (index == 1 ? .semibold : (index == 2 ? .medium : (index == 3 ? .regular : (index == 4 ? .light : .thin)))))
-                                   Spacer()
-                                   Text(birthdayText(for: con.birthday ?? Date()))
-                                       .font(.system(size: 20 - CGFloat(index * 2)))
-                                       .fontWeight(index == 0 ? .bold : (index == 1 ? .semibold : (index == 2 ? .medium : (index == 3 ? .regular : (index == 4 ? .light : .thin)))))
-                               }
-                               .padding([.top, .bottom], 0.1)
-                           }
-                       }
-                   }
-                   .padding()
-                   .foregroundColor(.white)
-               }
-       
-                .widgetBackground {
-                    Group {
-                                if upcomingContacts.contains(where: { Calendar.current.isDateInToday($0.birthday!) }) {
-                                    Image("BirthdayBackground")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .scaledToFill()
-                                        .clipped()
-                                        .overlay(
-                                                               Color.black.opacity(0.4)
-                                                                   .edgesIgnoringSafeArea(.all)
-                                                           )
-                                } else {
-                                    LinearGradient(colors: [.pink, .orange, .yellow], startPoint: .topTrailing, endPoint: .bottomLeading)
-                                }
+            VStack {
+                if let todayBirthdayContact = upcomingContacts.first(where: {
+                    Calendar.current.isDateInToday($0.birthday!)
+                }) {
+                    // Display the contact whose birthday is today
+                    HStack(alignment: .bottom) {
+                        VStack {
+                            Text("Today is,")
+                                .font(.subheadline)
+                                .shadow(radius: 5)
+                            Text("\(todayBirthdayContact.name)'s Birthday")
+                                .font(.system(size: 30))
+                                .fontWeight(.bold)
+                                .shadow(radius: 5)
+                        }
+                    }
+                    .padding([.top, .bottom], 0.1)
+                    
+                    Spacer()
+                    
+                    // Display the next two contacts
+                    ForEach(Array(upcomingContacts.prefix(2).enumerated()), id: \.element.id) { index, con in
+                        if con.id != todayBirthdayContact.id {
+                            HStack(alignment: .bottom) {
+                                Text(con.name)
+                                Spacer()
+                                Text(birthdayText(for: con.birthday ?? Date()))
                             }
+                            
+                        }
+                    }
+                } else {
+                    // Display the usual five contacts
+                    ForEach(Array(upcomingContacts.enumerated()), id: \.element.id) { index, con in
+                        HStack(alignment: .bottom) {
+                            Text(con.name)
+                                .font(.system(size: 20 - CGFloat(index * 2)))
+                                .fontWeight(index == 0 ? .bold : (index == 1 ? .semibold : (index == 2 ? .medium : (index == 3 ? .regular : (index == 4 ? .light : .thin)))))
+                            Spacer()
+                            Text(birthdayText(for: con.birthday ?? Date()))
+                                .font(.system(size: 20 - CGFloat(index * 2)))
+                                .fontWeight(index == 0 ? .bold : (index == 1 ? .semibold : (index == 2 ? .medium : (index == 3 ? .regular : (index == 4 ? .light : .thin)))))
+                        }
+                        .padding([.top, .bottom], 0.1)
+                    }
                 }
+            }
+            .padding()
+            .foregroundColor(.white)
+        }
+        
+        .widgetBackground {
+            Group {
+                if upcomingContacts.contains(where: { Calendar.current.isDateInToday($0.birthday!) }) {
+                    Image("BirthdayBackground")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .scaledToFill()
+                        .clipped()
+                        .overlay(
+                            Color.black.opacity(0.4)
+                                .edgesIgnoringSafeArea(.all)
+                        )
+                } else {
+                    LinearGradient(colors: [.pink, .orange, .yellow], startPoint: .topTrailing, endPoint: .bottomLeading)
+                }
+            }
+        }
         
     }
 }
@@ -236,13 +243,13 @@ struct BirthdayWidgetEntryView_Previews: PreviewProvider {
             Contact(id: UUID(), name: "David", birthday: Calendar.current.date(byAdding: .day, value: 3, to: today)!),
             Contact(id: UUID(), name: "Eve", birthday: Calendar.current.date(byAdding: .day, value: 4, to: today)!)
         ]
-
+        
         let entry = SimpleEntry(date: .now, configuration: .smiley)
-                let view = BirthdayWidgetEntryView(entry: entry)
-                    .previewContext(WidgetPreviewContext(family: .systemSmall))
-                
-                // Simulate providing data for the preview
-              
+        let view = BirthdayWidgetEntryView(entry: entry)
+            .previewContext(WidgetPreviewContext(family: .systemSmall))
+        
+        // Simulate providing data for the preview
+        
     }
 }
 
