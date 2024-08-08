@@ -128,7 +128,14 @@ struct BirthdayWidgetEntryView : View {
          (dateComponents.month! == endOfWeekComponents.month! && dateComponents.day! <= endOfWeekComponents.day!))
     }
     
-    
+    func isBirthdayToday(birthday: Date) -> Bool {
+        let calendar = Calendar.current
+        let today = Date()
+        let todayComponents = calendar.dateComponents([.month, .day], from: today)
+        let birthdayComponents = calendar.dateComponents([.month, .day], from: birthday)
+        
+        return todayComponents.month == birthdayComponents.month && todayComponents.day == birthdayComponents.day
+    }
     
     
     
@@ -136,7 +143,7 @@ struct BirthdayWidgetEntryView : View {
         ZStack {
             VStack {
                 if let todayBirthdayContact = upcomingContacts.first(where: {
-                    Calendar.current.isDateInToday($0.birthday!)
+                    isBirthdayToday(birthday: $0.birthday!)
                 }) {
                     // Display the contact whose birthday is today
                     HStack(alignment: .bottom) {
@@ -225,7 +232,7 @@ struct BirthdayWidgetEntryView : View {
         
         .widgetBackground {
             Group {
-                if upcomingContacts.contains(where: { Calendar.current.isDateInToday($0.birthday!) }) {
+                if upcomingContacts.contains(where: { isBirthdayToday(birthday: $0.birthday!) }) {
                     Image("BirthdayBackground")
                         .resizable()
                         .aspectRatio(contentMode: .fill)
