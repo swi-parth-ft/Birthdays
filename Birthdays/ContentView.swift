@@ -108,23 +108,50 @@ struct ContentView: View {
                             if let contactsForMonth = filteredContacts[month], !contactsForMonth.isEmpty {
                                 Section(header: Text(DateFormatter().monthSymbols[month - 1])) {
                                     ForEach(contactsForMonth) { contact in
+                                        
                                         HStack {
                                             VStack(alignment: .leading) {
                                                 Text(isBirthdayToday(birthday: contact.birthday!) ? "\(contact.name) 🎂" : contact.name)
                                                     .font(.headline)
                                                 Text("\(birthdayText(for: contact.birthday ?? Date()))")
                                                     .font(.subheadline)
+                                                
+                                              
                                             }
                                             .foregroundStyle(.black)
                                             Spacer()
+                                            if birthdayText(for: contact.birthday!) == "Today" {
+                                                Button {
+                                                    if selectedContact == contact {
+                                                        // Reset the selected person to nil before reassigning
+                                                        selectedContact = nil
+                                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                                            selectedContact = contact
+                                                        
+                                                        }
+                                                    } else {
+                                                        selectedContact = contact
+                                                        
+                                                    }
+                                                } label: {
+                                                    Label("", systemImage: "sparkles")
+                                                        .foregroundStyle(.purple)
+                                                        .symbolEffect(.breathe)
+                                                }
+                                                
+                                            }
+                                                
+                                            
                                             if let birthday = contact.birthday {
-                                                HStack {
-                                                    Text("\(daysUntilBirthday(from: Date(), to: birthday)) days")
-                                                        .font(.subheadline)
-                                                        .foregroundColor(.gray)
-                                                    Image(systemName: "arrow.down")
-                                                        .font(.subheadline)
-                                                        .foregroundColor(.gray)
+                                                if birthdayText(for: contact.birthday!) != "Today" {
+                                                    HStack {
+                                                        Text("\(daysUntilBirthday(from: Date(), to: birthday)) days")
+                                                            .font(.subheadline)
+                                                            .foregroundColor(.gray)
+                                                        Image(systemName: "arrow.down")
+                                                            .font(.subheadline)
+                                                            .foregroundColor(.gray)
+                                                    }
                                                 }
                                             }
                                         }
