@@ -25,13 +25,13 @@ struct WishView: View {
                     let x = (sin(timeline.date.timeIntervalSince1970) + 1) / 2
 
                     MeshGradient(width: 3, height: 3, points: [
-                        [0, 0], [0.5, 0], [1, 0],
+                        [0, 0], [Float(x), 0], [1, 0],
                         [0, 0.5], [Float(x), 0.5], [1, 0.5],
                         [0, 1], [0.5, 1], [1, 1]
                     ], colors: [
-                        .pink, .pink, .purple,
-                        .purple, .pink, .purple,
-                        .purple, .purple, .purple
+                        .black, .purple, .pink,
+                        .black, .black, .black,
+                        .black, .black, .black
                     ])
                 }.ignoresSafeArea()
                 VStack {
@@ -39,7 +39,7 @@ struct WishView: View {
                         
                         QuestionsScreen(viewModel: questionsViewModel, allQuestionsAnswered: $allQuestionsAnswered)
                     } else {
-                        WishesScreen(viewModel: chatGPTViewModel, answers: questionsViewModel.answers, name: contact.name)
+                        WishesScreen(answers: questionsViewModel.answers, name: contact.name)
                     }
                 }
             }
@@ -111,7 +111,7 @@ struct QuestionsScreen: View {
                 .padding()
                 .background(.white.opacity(0.5))
                 .cornerRadius(22)
-                .tint(.purple)
+                .tint(.white)
             } else {
                 Text("All questions answered!")
                 // Call API and show results here
@@ -178,60 +178,121 @@ class ChatGPTViewModel: ObservableObject {
 }
 
 struct WishesScreen: View {
-    @ObservedObject var viewModel = ChatGPTViewModel()
+
     var answers: [String]
     var name: String
     @State private var size = 60
+    @State private var isLoading = false
+    let key = Env.init().key
+    @State private var wish: String = ""
     
     var body: some View {
         VStack {
-            HStack {
-                Button("Smaller") {
-                    size -= 30
-                    viewModel.generateWish(answers: answers, size: size, name: name)
-                }
-                .padding()
-                .frame(width: 100)
-                .background(.white.opacity(0.5))
-                .cornerRadius(22)
-                .foregroundColor(.white)
-                Button("Regerate", systemImage: "sparkles") {
-                    viewModel.generateWish(answers: answers, size: size, name: name)
-                }
-                .padding()
-                .frame(width: 130)
-                .background(.white.opacity(0.5))
-                .cornerRadius(22)
-                .foregroundColor(.white)
-                Button("Longer") {
-                    size += 30
-                    viewModel.generateWish(answers: answers, size: size, name: name)
-                }
-                .padding()
-                .frame(width: 100)
-                .background(.white.opacity(0.5))
-                .cornerRadius(22)
-                .foregroundColor(.white)
-            }
-            Text("Tap message to copy")
-                .font(.caption)
-                .foregroundStyle(.gray)
-                .padding(.top)
-                
-            ScrollView {
-                Text(viewModel.wish)
-                    .lineLimit(nil) // Allow unlimited lines
-                    .fixedSize(horizontal: false, vertical: true)
-                    .padding()
-                    .onTapGesture {
-                        UIPasteboard.general.string = viewModel.wish
+            if !isLoading {
+                HStack {
+                    Button("Smaller") {
+                        size -= 30
+                        generateWish(answers: answers, size: size, name: name)
                     }
+                    .padding()
+                    .frame(width: 100)
+                    .background(.white.opacity(0.5))
+                    .cornerRadius(22)
+                    .foregroundColor(.white)
+                    Button("Regerate", systemImage: "sparkles") {
+                        generateWish(answers: answers, size: size, name: name)
+                    }
+                    .padding()
+                    .frame(width: 130)
+                    .background(.white.opacity(0.5))
+                    .cornerRadius(22)
+                    .foregroundColor(.white)
+                    Button("Longer") {
+                        size += 30
+                        generateWish(answers: answers, size: size, name: name)
+                    }
+                    .padding()
+                    .frame(width: 100)
+                    .background(.white.opacity(0.5))
+                    .cornerRadius(22)
+                    .foregroundColor(.white)
+                }
+                Text("Tap message to copy")
+                    .font(.caption)
+                    .foregroundStyle(.gray)
+                    .padding(.top)
+                
+                ScrollView {
+                    Text(wish)
+                        .lineLimit(nil) // Allow unlimited lines
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding()
+                        .onTapGesture {
+                            UIPasteboard.general.string = wish
+                        }
+                }
+            } else {
+                GifImage("Animation")
             }
+            
             
         }
         .onAppear {
-            viewModel.generateWish(answers: answers, size: size, name: name)
+            generateWish(answers: answers, size: size, name: name)
         }
+    }
+    
+    func generateWish(answers: [String], size: Int, name: String) {
+        
+        isLoading = true
+        let prompt = """
+        I need to create a birthday wish for someone based on the following information:
+        - Name: \(name)
+        - Relationship: \(answers[0])
+        - Age: \(answers[1])
+        - Hobbies/Interests: \(answers[2])
+        - Memory/Inside Joke: \(answers[3])
+        - Admired Quality: \(answers[4])
+        - Tone (funny, heartfelt, formal): \(answers[5])
+        - Additional Details: \(answers[6])
+
+        Please generate a birthday wish message in \(size) words using this information.
+        """
+        let apiKey = "\(key)"
+        let url = URL(string: "https://api.openai.com/v1/chat/completions")!
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let requestBody: [String: Any] = [
+            "model": "gpt-3.5-turbo",
+            "messages": [
+                [
+                    "role": "user",
+                    "content": prompt
+                ]
+            ],
+            "max_tokens": 150 // Optional: Adjust as needed
+        ]
+        
+        request.httpBody = try? JSONSerialization.data(withJSONObject: requestBody)
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let data = data {
+                if let responseDict = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                   let choices = responseDict["choices"] as? [[String: Any]],
+                   let message = choices.first?["message"] as? [String: Any],
+                   let content = message["content"] as? String {
+                    DispatchQueue.main.async {
+                        self.wish = content
+                        isLoading = false
+                        
+                    }
+                }
+            }
+        }.resume()
     }
     
     
