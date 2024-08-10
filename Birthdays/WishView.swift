@@ -39,7 +39,7 @@ struct WishView: View {
                         
                         QuestionsScreen(viewModel: questionsViewModel, allQuestionsAnswered: $allQuestionsAnswered)
                     } else {
-                        WishesScreen(viewModel: chatGPTViewModel, answers: questionsViewModel.answers)
+                        WishesScreen(viewModel: chatGPTViewModel, answers: questionsViewModel.answers, name: contact.name)
                     }
                 }
             }
@@ -72,8 +72,17 @@ struct QuestionView: View {
 
 
 class QuestionsViewModel: ObservableObject {
-    @Published var questions: [String] = ["What's the recipient's nick name?", "How old are they turning?", "What's a special memory you share?"]
-    @Published var answers: [String] = ["", "", ""]
+    @Published var questions: [String] = [
+        
+        "What is your relationship with this person? (e.g., friend, family, colleague)",
+        "How old is this person turning?",
+        "What are some of this person's hobbies or interests?",
+        "Is there a specific memory or inside joke you share with this person?",
+        "What is a quality or characteristic you admire about this person?",
+        "Do you want the message to be funny, heartfelt, or formal?",
+        "Is there anything specific you want to include in the birthday wish?"
+    ]
+    @Published var answers: [String] = ["", "", "", "", "", "", ""]
     @Published var currentQuestionIndex = 0
     
     func nextQuestion() {
@@ -113,40 +122,133 @@ struct QuestionsScreen: View {
 }
 
 class ChatGPTViewModel: ObservableObject {
-    @Published var birthdayWishes: [String] = []
-    
-    func generateWishes(answers: [String]) {
-        // Implement the API call to ChatGPT here
-        // For demonstration purposes, we'll use static messages
-        birthdayWishes = [
-            "Happy Birthday \(answers[0])! Can't believe you're turning \(answers[1])! Remember our time at \(answers[2])?",
-            "Wishing you a wonderful birthday, \(answers[0])! \(answers[1]) years young and many more to come. Let's never forget \(answers[2])."
+   
+    @Published var wish: String = ""
+    let key = Env.init().key
+    func generateWish(answers: [String], size: Int, name: String) {
+        let prompt = """
+        I need to create a birthday wish for someone based on the following information:
+        - Name: \(name)
+        - Relationship: \(answers[0])
+        - Age: \(answers[1])
+        - Hobbies/Interests: \(answers[2])
+        - Memory/Inside Joke: \(answers[3])
+        - Admired Quality: \(answers[4])
+        - Tone (funny, heartfelt, formal): \(answers[5])
+        - Additional Details: \(answers[6])
+
+        Please generate a birthday wish message in \(size) words using this information.
+        """
+        let apiKey = "\(key)"
+        let url = URL(string: "https://api.openai.com/v1/chat/completions")!
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let requestBody: [String: Any] = [
+            "model": "gpt-3.5-turbo",
+            "messages": [
+                [
+                    "role": "user",
+                    "content": prompt
+                ]
+            ],
+            "max_tokens": 150 // Optional: Adjust as needed
         ]
+        
+        request.httpBody = try? JSONSerialization.data(withJSONObject: requestBody)
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let data = data {
+                if let responseDict = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                   let choices = responseDict["choices"] as? [[String: Any]],
+                   let message = choices.first?["message"] as? [String: Any],
+                   let content = message["content"] as? String {
+                    DispatchQueue.main.async {
+                        self.wish = content
+                        
+                    }
+                }
+            }
+        }.resume()
     }
+ 
 }
 
 struct WishesScreen: View {
     @ObservedObject var viewModel = ChatGPTViewModel()
     var answers: [String]
+    var name: String
+    @State private var size = 60
     
     var body: some View {
         VStack {
-            Text("Choose a Birthday Wish:")
-                .font(.title)
+            HStack {
+                Button("Smaller") {
+                    size -= 30
+                    viewModel.generateWish(answers: answers, size: size, name: name)
+                }
                 .padding()
-            List(viewModel.birthdayWishes, id: \.self) { wish in
-                Text(wish)
+                .frame(width: 100)
+                .background(.white.opacity(0.5))
+                .cornerRadius(22)
+                .foregroundColor(.white)
+                Button("Regerate", systemImage: "sparkles") {
+                    viewModel.generateWish(answers: answers, size: size, name: name)
+                }
+                .padding()
+                .frame(width: 130)
+                .background(.white.opacity(0.5))
+                .cornerRadius(22)
+                .foregroundColor(.white)
+                Button("Longer") {
+                    size += 30
+                    viewModel.generateWish(answers: answers, size: size, name: name)
+                }
+                .padding()
+                .frame(width: 100)
+                .background(.white.opacity(0.5))
+                .cornerRadius(22)
+                .foregroundColor(.white)
+            }
+            Text("Tap message to copy")
+                .font(.caption)
+                .foregroundStyle(.gray)
+                .padding(.top)
+                
+            ScrollView {
+                Text(viewModel.wish)
+                    .lineLimit(nil) // Allow unlimited lines
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding()
                     .onTapGesture {
-                        UIPasteboard.general.string = wish
+                        UIPasteboard.general.string = viewModel.wish
                     }
             }
+            
         }
         .onAppear {
-            viewModel.generateWishes(answers: answers)
+            viewModel.generateWish(answers: answers, size: size, name: name)
         }
     }
+    
+    
 }
 
 #Preview {
+    WishesScreen(answers: [
+        "John",                       // Name
+        "best friend",                // Relationship
+        "30",                         // Age
+        "playing guitar, hiking",     // Hobbies/Interests
+        "Our trip to the mountains",  // Memory/Inside Joke
+        "kindness and sense of humor",// Admired Quality
+        "funny",                      // Tone
+        "Enjoy your special day!"     // Additional Details
+    ], name: "Parth"
+)
+    
     WishView(contact: Contact(id: UUID(), name: "Parth", birthday: Date(), phoneNumber: "6478060801"))
 }

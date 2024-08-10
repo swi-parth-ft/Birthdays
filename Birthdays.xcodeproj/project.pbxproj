@@ -10,6 +10,7 @@
 		077E055B2C66E9DD00B9D2D4 /* WishView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077E055A2C66E9DD00B9D2D4 /* WishView.swift */; };
 		077E055D2C66ECCE00B9D2D4 /* DetailScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077E055C2C66ECCE00B9D2D4 /* DetailScreen.swift */; };
 		077E055F2C67DC1500B9D2D4 /* Birthdates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077E055E2C67DC1500B9D2D4 /* Birthdates.swift */; };
+		077E05662C680C2600B9D2D4 /* Env.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077E05652C680C2600B9D2D4 /* Env.swift */; };
 		07FB37CC2C5FCB350070EEFA /* BirthdaysApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FB37CB2C5FCB350070EEFA /* BirthdaysApp.swift */; };
 		07FB37CE2C5FCB350070EEFA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FB37CD2C5FCB350070EEFA /* ContentView.swift */; };
 		07FB37D02C5FCB360070EEFA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07FB37CF2C5FCB360070EEFA /* Assets.xcassets */; };
@@ -65,6 +66,7 @@
 		077E055A2C66E9DD00B9D2D4 /* WishView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WishView.swift; sourceTree = "<group>"; };
 		077E055C2C66ECCE00B9D2D4 /* DetailScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailScreen.swift; sourceTree = "<group>"; };
 		077E055E2C67DC1500B9D2D4 /* Birthdates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Birthdates.swift; sourceTree = "<group>"; };
+		077E05652C680C2600B9D2D4 /* Env.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Env.swift; sourceTree = "<group>"; };
 		07FB37C82C5FCB350070EEFA /* Birthdays.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Birthdays.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		07FB37CB2C5FCB350070EEFA /* BirthdaysApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirthdaysApp.swift; sourceTree = "<group>"; };
 		07FB37CD2C5FCB350070EEFA /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -136,6 +138,7 @@
 				077E055E2C67DC1500B9D2D4 /* Birthdates.swift */,
 				07FB38142C5FDFB70070EEFA /* Contact.swift */,
 				077E055A2C66E9DD00B9D2D4 /* WishView.swift */,
+				077E05652C680C2600B9D2D4 /* Env.swift */,
 				07FB37DB2C5FCC670070EEFA /* AddContactView.swift */,
 				07FB383A2C6266E90070EEFA /* AddNotifications.swift */,
 				07FB37CF2C5FCB360070EEFA /* Assets.xcassets */,
@@ -279,6 +282,7 @@
 				07FB383B2C6266E90070EEFA /* AddNotifications.swift in Sources */,
 				07FB38152C5FDFB70070EEFA /* Contact.swift in Sources */,
 				07FB37CE2C5FCB350070EEFA /* ContentView.swift in Sources */,
+				077E05662C680C2600B9D2D4 /* Env.swift in Sources */,
 				07FB37CC2C5FCB350070EEFA /* BirthdaysApp.swift in Sources */,
 				07FB37DC2C5FCC670070EEFA /* AddContactView.swift in Sources */,
 				077E055F2C67DC1500B9D2D4 /* Birthdates.swift in Sources */,
