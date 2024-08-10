@@ -6,8 +6,12 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct WishView: View {
+    @Environment(\.modelContext) var modelContext
+    @Query var contacts: [Contact]
+    
     @StateObject var questionsViewModel = QuestionsViewModel()
     @StateObject var chatGPTViewModel = ChatGPTViewModel()
     @State private var allQuestionsAnswered = false
