@@ -11,27 +11,30 @@ struct DetailScreen: View {
     var contact: Contact
     
     var body: some View {
-        ZStack {
-            VStack {
-                Text(contact.name)
-                    .font(.title)
-                Text(contact.birthday!.description)
-                
-                if contact.phoneNumber != nil {
+        NavigationStack {
+            ZStack {
+                VStack {
+                    Text(contact.name)
+                        .font(.title)
+                    Text(contact.birthday!.description)
                     
-                    Text(contact.phoneNumber ?? "6478060801")
-                    
-                    Button("Call") {
-                        callPhoneNumber(contact.phoneNumber!)
+                    if contact.phoneNumber != nil {
+                        
+                        Text(contact.phoneNumber ?? "6478060801")
+                        
+                        Button("Call") {
+                            callPhoneNumber(contact.phoneNumber!)
+                        }
+                        
+                        Button("Message") {
+                            messagePhoneNumber(contact.phoneNumber!)
+                        }
                     }
-                    
-                    Button("Message") {
-                        messagePhoneNumber(contact.phoneNumber!)
+                    NavigationLink(destination: WishView(contact: contact)) {
+                        Button("Wish") {
+                            
+                        }
                     }
-                }
-                
-                Button("Wish") {
-                    
                 }
             }
         }

@@ -9,8 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct WishView: View {
-    @Environment(\.modelContext) var modelContext
-    @Query var contacts: [Contact]
+    var contact: Contact
     
     @StateObject var questionsViewModel = QuestionsViewModel()
     @StateObject var chatGPTViewModel = ChatGPTViewModel()
@@ -19,6 +18,7 @@ struct WishView: View {
     var body: some View {
         VStack {
             if !allQuestionsAnswered {
+                Text(contact.name)
                 QuestionsScreen(viewModel: questionsViewModel, allQuestionsAnswered: $allQuestionsAnswered)
             } else {
                 WishesScreen(viewModel: chatGPTViewModel, answers: questionsViewModel.answers)
@@ -136,5 +136,5 @@ struct WishesScreen: View {
 }
 
 #Preview {
-    WishView()
+    WishView(contact: Contact(id: UUID(), name: "Parth", birthday: Date(), phoneNumber: "6478060801"))
 }

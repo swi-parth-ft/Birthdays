@@ -106,52 +106,61 @@ struct ContentView: View {
                             
                             if let contactsForMonth = filteredContacts[month], !contactsForMonth.isEmpty {
                                 Section(header: Text(DateFormatter().monthSymbols[month - 1])) {
-                                    ForEach(contactsForMonth) { contact in
-                                        NavigationLink(value: contact) {
-                                            HStack {
-                                                VStack(alignment: .leading) {
-                                                    Text(isBirthdayToday(birthday: contact.birthday!) ? "\(contact.name) 🎂" : contact.name)
-                                                        .font(.headline)
-                                                    Text("\(birthdayText(for: contact.birthday ?? Date()))")
-                                                        .font(.subheadline)
+                                    
+                                        ForEach(contactsForMonth) { contact in
+                                           
+                                                HStack {
+                                                    VStack(alignment: .leading) {
+                                                        Text(isBirthdayToday(birthday: contact.birthday!) ? "\(contact.name) 🎂" : contact.name)
+                                                            .font(.headline)
+                                                        Text("\(birthdayText(for: contact.birthday ?? Date()))")
+                                                            .font(.subheadline)
+                                                    }
+                                                    Spacer()
+                                                    NavigationLink(destination: DetailScreen(contact: contact)) {
+                                                        Button("Wish") {
+                                                            
+                                                        }
+                                                    }
+                                                    if let birthday = contact.birthday {
+                                                        HStack {
+                                                            
+                                                            Text("\(daysUntilBirthday(from: Date(), to: birthday)) days")
+                                                                .font(.subheadline)
+                                                                .foregroundColor(.gray)
+                                                            Image(systemName: "arrow.down")
+                                                                .font(.subheadline)
+                                                                .foregroundColor(.gray)
+                                                        }
+                                                    }
                                                 }
-                                                Spacer()
-                                                if let birthday = contact.birthday {
-                                                    HStack {
+                                                .listRowBackground(Color.white.opacity(0.5))
+                                                .swipeActions(edge: .leading) {
+                                                    if let phoneNumber = contact.phoneNumber {
+                                                        Button {
+                                                            callPhoneNumber(phoneNumber)
+                                                        } label: {
+                                                            Label("Call", systemImage: "phone.fill")
+                                                        }
+                                                        .tint(.green)
                                                         
-                                                        Text("\(daysUntilBirthday(from: Date(), to: birthday)) days")
-                                                            .font(.subheadline)
-                                                            .foregroundColor(.gray)
-                                                        Image(systemName: "arrow.down")
-                                                            .font(.subheadline)
-                                                            .foregroundColor(.gray)
+                                                        Button {
+                                                            messagePhoneNumber(phoneNumber)
+                                                        } label: {
+                                                            Label("Message", systemImage: "message.fill")
+                                                        }
+                                                        .tint(.blue)
                                                     }
                                                 }
-                                            }
-                                            .listRowBackground(Color.white.opacity(0.5))
-                                            .swipeActions(edge: .leading) {
-                                                if let phoneNumber = contact.phoneNumber {
-                                                    Button {
-                                                        callPhoneNumber(phoneNumber)
-                                                    } label: {
-                                                        Label("Call", systemImage: "phone.fill")
-                                                    }
-                                                    .tint(.green)
-                                                    
-                                                    Button {
-                                                        messagePhoneNumber(phoneNumber)
-                                                    } label: {
-                                                        Label("Message", systemImage: "message.fill")
-                                                    }
-                                                    .tint(.blue)
-                                                }
-                                            }
-                                            .navigationDestination(for: Contact.self) { contact in
-                                                DetailScreen(contact: contact)
-                                            }
+                                                
+                                                
+                                            
                                         }
-                                    }
-                                    .onDelete(perform: deletePerson)
+                                        .onDelete(perform: deletePerson)
+                                       
+                                    
+                                   
+                                   
                                     
                                 }
                             }
@@ -159,9 +168,8 @@ struct ContentView: View {
                         }
                     }
                     .searchable(text: $searchText, prompt: "Search for a item")
-                    .navigationDestination(for: Contact.self) { contact in
-                        DetailScreen(contact: contact)
-                    }
+                   
+                    
                 }
                 }
                     .scrollContentBackground(.hidden)
@@ -192,6 +200,8 @@ struct ContentView: View {
                     .sheet(isPresented: $showingAddView) {
                         AddContactView()
                     }
+                    
+                    
             }
        
         }
