@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import Combine
 
 struct WishView: View {
     var contact: Contact
@@ -14,15 +15,36 @@ struct WishView: View {
     @StateObject var questionsViewModel = QuestionsViewModel()
     @StateObject var chatGPTViewModel = ChatGPTViewModel()
     @State private var allQuestionsAnswered = false
-
+    
+    
+    
     var body: some View {
-        VStack {
-            if !allQuestionsAnswered {
-                Text(contact.name)
-                QuestionsScreen(viewModel: questionsViewModel, allQuestionsAnswered: $allQuestionsAnswered)
-            } else {
-                WishesScreen(viewModel: chatGPTViewModel, answers: questionsViewModel.answers)
+        NavigationStack {
+            ZStack{
+                TimelineView(.animation) { timeline in
+                    let x = (sin(timeline.date.timeIntervalSince1970) + 1) / 2
+
+                    MeshGradient(width: 3, height: 3, points: [
+                        [0, 0], [0.5, 0], [1, 0],
+                        [0, 0.5], [Float(x), 0.5], [1, 0.5],
+                        [0, 1], [0.5, 1], [1, 1]
+                    ], colors: [
+                        .pink, .pink, .purple,
+                        .purple, .pink, .purple,
+                        .purple, .purple, .purple
+                    ])
+                }.ignoresSafeArea()
+                VStack {
+                    if !allQuestionsAnswered {
+                        
+                        QuestionsScreen(viewModel: questionsViewModel, allQuestionsAnswered: $allQuestionsAnswered)
+                    } else {
+                        WishesScreen(viewModel: chatGPTViewModel, answers: questionsViewModel.answers)
+                    }
+                }
             }
+            .navigationTitle(contact.name)
+            .preferredColorScheme(.dark)
         }
     }
 }
@@ -31,41 +53,29 @@ struct QuestionView: View {
     @State private var offset: CGFloat = UIScreen.main.bounds.width
     var question: String
     var answer: Binding<String>
-
+    
     var body: some View {
-        VStack {
+        VStack(alignment: .center) {
             Text(question)
                 .font(.title)
                 .padding()
+                .foregroundColor(.white)
             TextField("Your answer", text: answer)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding()
+                .tint(.purple)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.white)
-        .cornerRadius(10)
-        .shadow(radius: 5)
-        .offset(x: offset)
-        .onAppear {
-            withAnimation(.easeOut(duration: 0.5)) {
-                offset = 0
-            }
-        }
-        .onDisappear {
-            withAnimation(.easeIn(duration: 0.5)) {
-                offset = -UIScreen.main.bounds.width
-            }
-        }
+        .multilineTextAlignment(.center)
+        
     }
 }
 
-import Combine
+
 
 class QuestionsViewModel: ObservableObject {
-    @Published var questions: [String] = ["What's the recipient's name?", "How old are they turning?", "What's a special memory you share?"]
+    @Published var questions: [String] = ["What's the recipient's nick name?", "How old are they turning?", "What's a special memory you share?"]
     @Published var answers: [String] = ["", "", ""]
     @Published var currentQuestionIndex = 0
-
+    
     func nextQuestion() {
         if currentQuestionIndex < questions.count - 1 {
             currentQuestionIndex += 1
@@ -73,12 +83,11 @@ class QuestionsViewModel: ObservableObject {
     }
 }
 
-import SwiftUI
 
 struct QuestionsScreen: View {
     @StateObject var viewModel = QuestionsViewModel()
     @Binding var allQuestionsAnswered: Bool
-
+    
     var body: some View {
         VStack {
             if !allQuestionsAnswered {
@@ -91,6 +100,9 @@ struct QuestionsScreen: View {
                     }
                 }
                 .padding()
+                .background(.white.opacity(0.5))
+                .cornerRadius(22)
+                .tint(.purple)
             } else {
                 Text("All questions answered!")
                 // Call API and show results here
@@ -102,7 +114,7 @@ struct QuestionsScreen: View {
 
 class ChatGPTViewModel: ObservableObject {
     @Published var birthdayWishes: [String] = []
-
+    
     func generateWishes(answers: [String]) {
         // Implement the API call to ChatGPT here
         // For demonstration purposes, we'll use static messages
@@ -116,7 +128,7 @@ class ChatGPTViewModel: ObservableObject {
 struct WishesScreen: View {
     @ObservedObject var viewModel = ChatGPTViewModel()
     var answers: [String]
-
+    
     var body: some View {
         VStack {
             Text("Choose a Birthday Wish:")

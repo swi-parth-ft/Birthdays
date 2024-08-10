@@ -175,7 +175,6 @@ struct ContentView: View {
                     .scrollContentBackground(.hidden)
                 }
             }
-            
             .navigationTitle("Birthdays")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -205,16 +204,13 @@ struct ContentView: View {
             }
             .sheet(isPresented: $isShowingDetail) {
                 if let selectedContact = selectedContact {
-                    DetailScreen(contact: selectedContact)
-                        .presentationDetents([.fraction(0.7), .large, .large])
+                    WishView(contact: selectedContact)
+                        .presentationDetents([.fraction(0.7), .medium])
                 }
             }
             .onChange(of: selectedContact) { _ in
                 isShowingDetail = selectedContact != nil
             }
-            
-            
-            
         }
     }
     
@@ -305,7 +301,6 @@ struct ContentView: View {
         }
         WidgetCenter.shared.reloadAllTimelines()
     }
-    
     
     func birthdayText(for date: Date) -> String {
         let calendar = Calendar.current
