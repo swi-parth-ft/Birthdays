@@ -39,7 +39,7 @@ struct WishView: View {
                         
                         QuestionsScreen(viewModel: questionsViewModel, allQuestionsAnswered: $allQuestionsAnswered)
                     } else {
-                        WishesScreen(answers: questionsViewModel.answers, name: contact.name)
+                        WishesScreen(answers: questionsViewModel.answers, name: contact.name, number: contact.phoneNumber ?? nil)
                     }
                 }
             }
@@ -181,6 +181,7 @@ struct WishesScreen: View {
 
     var answers: [String]
     var name: String
+    var number: String?
     @State private var size = 60
     @State private var isLoading = false
     let key = Env.init().key
@@ -230,6 +231,11 @@ struct WishesScreen: View {
                         .onTapGesture {
                             UIPasteboard.general.string = wish
                         }
+                    if number != nil {
+                        Button("", systemImage: "message.fill") {
+                            messagePhoneNumber(number!, withText: wish.description)
+                        }
+                    }
                 }
             } else {
                 GifImage("Animation")
@@ -293,6 +299,22 @@ struct WishesScreen: View {
                 }
             }
         }.resume()
+    }
+    
+    func messagePhoneNumber(_ phoneNumber: String, withText text: String) {
+        // Encode the text to be URL-safe
+        
+        let messageURLString = "sms:\(phoneNumber)&body=\(text)"
+        
+        if let messageURL = URL(string: messageURLString) {
+            if UIApplication.shared.canOpenURL(messageURL) {
+                UIApplication.shared.open(messageURL, options: [:], completionHandler: nil)
+            } else {
+                print("Cannot send a message on this device.")
+            }
+        } else {
+            print("Invalid URL.")
+        }
     }
     
     
