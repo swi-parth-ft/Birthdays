@@ -43,7 +43,7 @@ struct WishView: View {
                     }
                 }
             }
-            .navigationTitle(contact.name)
+            .navigationTitle("Wish for \(contact.name)")
             .preferredColorScheme(.dark)
         }
     }
@@ -186,7 +186,7 @@ struct WishesScreen: View {
     @State private var isLoading = false
     let key = Env.init().key
     @State private var wish: String = ""
-    
+    @State private var isCopied = false
     var body: some View {
         VStack {
             if !isLoading {
@@ -194,6 +194,7 @@ struct WishesScreen: View {
                     Button("Smaller") {
                         size -= 30
                         generateWish(answers: answers, size: size, name: name)
+                        isCopied = false
                     }
                     .padding()
                     .frame(width: 100)
@@ -202,6 +203,7 @@ struct WishesScreen: View {
                     .foregroundColor(.white)
                     Button("Regerate", systemImage: "sparkles") {
                         generateWish(answers: answers, size: size, name: name)
+                        isCopied = false
                     }
                     .padding()
                     .frame(width: 130)
@@ -211,6 +213,7 @@ struct WishesScreen: View {
                     Button("Longer") {
                         size += 30
                         generateWish(answers: answers, size: size, name: name)
+                        isCopied = false
                     }
                     .padding()
                     .frame(width: 100)
@@ -218,7 +221,7 @@ struct WishesScreen: View {
                     .cornerRadius(22)
                     .foregroundColor(.white)
                 }
-                Text("Tap message to copy")
+                Text(isCopied ? "Message copied" : "Tap message to copy.")
                     .font(.caption)
                     .foregroundStyle(.gray)
                     .padding(.top)
@@ -229,6 +232,7 @@ struct WishesScreen: View {
                         .fixedSize(horizontal: false, vertical: true)
                         .padding()
                         .onTapGesture {
+                            isCopied = true
                             UIPasteboard.general.string = wish
                         }
                     if number != nil {

@@ -198,7 +198,7 @@ struct ContentView: View {
                             
                         }
                     }
-                    .searchable(text: $searchText, prompt: "Search for a item")
+                    .searchable(text: $searchText, prompt: "Search for a Birthday...")
                     .scrollContentBackground(.hidden)
                 }
             }
