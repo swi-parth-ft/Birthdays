@@ -13,6 +13,13 @@
 		077E05662C680C2600B9D2D4 /* Env.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077E05652C680C2600B9D2D4 /* Env.swift */; };
 		077E05682C68160C00B9D2D4 /* AnimationLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077E05672C68160C00B9D2D4 /* AnimationLoading.swift */; };
 		077E056A2C68163200B9D2D4 /* Animation.gif in Resources */ = {isa = PBXBuildFile; fileRef = 077E05692C68163200B9D2D4 /* Animation.gif */; };
+		077E056C2C683B5E00B9D2D4 /* CallAndMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077E056B2C683B5E00B9D2D4 /* CallAndMessage.swift */; };
+		077E05992C69088C00B9D2D4 /* OpenAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077E05982C69088C00B9D2D4 /* OpenAIService.swift */; };
+		077E059B2C6908B900B9D2D4 /* ImageGenerateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077E059A2C6908B900B9D2D4 /* ImageGenerateView.swift */; };
+		077E059E2C690B0200B9D2D4 /* DotLottie in Frameworks */ = {isa = PBXBuildFile; productRef = 077E059D2C690B0200B9D2D4 /* DotLottie */; };
+		077E05A02C690B1C00B9D2D4 /* animals.json in Resources */ = {isa = PBXBuildFile; fileRef = 077E059F2C690B1C00B9D2D4 /* animals.json */; };
+		077E05A22C690BE700B9D2D4 /* GiftAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 077E05A12C690BE700B9D2D4 /* GiftAnimation.json */; };
+		077E05A42C6912B100B9D2D4 /* loading.json in Resources */ = {isa = PBXBuildFile; fileRef = 077E05A32C6912B100B9D2D4 /* loading.json */; };
 		07FB37CC2C5FCB350070EEFA /* BirthdaysApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FB37CB2C5FCB350070EEFA /* BirthdaysApp.swift */; };
 		07FB37CE2C5FCB350070EEFA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FB37CD2C5FCB350070EEFA /* ContentView.swift */; };
 		07FB37D02C5FCB360070EEFA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07FB37CF2C5FCB360070EEFA /* Assets.xcassets */; };
@@ -71,6 +78,12 @@
 		077E05652C680C2600B9D2D4 /* Env.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Env.swift; sourceTree = "<group>"; };
 		077E05672C68160C00B9D2D4 /* AnimationLoading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationLoading.swift; sourceTree = "<group>"; };
 		077E05692C68163200B9D2D4 /* Animation.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Animation.gif; sourceTree = "<group>"; };
+		077E056B2C683B5E00B9D2D4 /* CallAndMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallAndMessage.swift; sourceTree = "<group>"; };
+		077E05982C69088C00B9D2D4 /* OpenAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIService.swift; sourceTree = "<group>"; };
+		077E059A2C6908B900B9D2D4 /* ImageGenerateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGenerateView.swift; sourceTree = "<group>"; };
+		077E059F2C690B1C00B9D2D4 /* animals.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = animals.json; sourceTree = "<group>"; };
+		077E05A12C690BE700B9D2D4 /* GiftAnimation.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = GiftAnimation.json; sourceTree = "<group>"; };
+		077E05A32C6912B100B9D2D4 /* loading.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = loading.json; sourceTree = "<group>"; };
 		07FB37C82C5FCB350070EEFA /* Birthdays.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Birthdays.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		07FB37CB2C5FCB350070EEFA /* BirthdaysApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirthdaysApp.swift; sourceTree = "<group>"; };
 		07FB37CD2C5FCB350070EEFA /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -97,6 +110,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				077E059E2C690B0200B9D2D4 /* DotLottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -139,10 +153,16 @@
 				07FB37CB2C5FCB350070EEFA /* BirthdaysApp.swift */,
 				077E05692C68163200B9D2D4 /* Animation.gif */,
 				07FB37CD2C5FCB350070EEFA /* ContentView.swift */,
+				077E056B2C683B5E00B9D2D4 /* CallAndMessage.swift */,
 				077E055C2C66ECCE00B9D2D4 /* DetailScreen.swift */,
 				077E055E2C67DC1500B9D2D4 /* Birthdates.swift */,
+				077E05A32C6912B100B9D2D4 /* loading.json */,
 				07FB38142C5FDFB70070EEFA /* Contact.swift */,
 				077E055A2C66E9DD00B9D2D4 /* WishView.swift */,
+				077E05A12C690BE700B9D2D4 /* GiftAnimation.json */,
+				077E059A2C6908B900B9D2D4 /* ImageGenerateView.swift */,
+				077E05982C69088C00B9D2D4 /* OpenAIService.swift */,
+				077E059F2C690B1C00B9D2D4 /* animals.json */,
 				077E05672C68160C00B9D2D4 /* AnimationLoading.swift */,
 				077E05652C680C2600B9D2D4 /* Env.swift */,
 				07FB37DB2C5FCC670070EEFA /* AddContactView.swift */,
@@ -202,6 +222,9 @@
 				07FB382F2C5FDFE00070EEFA /* PBXTargetDependency */,
 			);
 			name = Birthdays;
+			packageProductDependencies = (
+				077E059D2C690B0200B9D2D4 /* DotLottie */,
+			);
 			productName = Birthdays;
 			productReference = 07FB37C82C5FCB350070EEFA /* Birthdays.app */;
 			productType = "com.apple.product-type.application";
@@ -250,6 +273,9 @@
 				Base,
 			);
 			mainGroup = 07FB37BF2C5FCB350070EEFA;
+			packageReferences = (
+				077E059C2C690AC400B9D2D4 /* XCRemoteSwiftPackageReference "dotlottie-ios" */,
+			);
 			productRefGroup = 07FB37C92C5FCB350070EEFA /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -266,8 +292,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				07FB37D32C5FCB360070EEFA /* Preview Assets.xcassets in Resources */,
+				077E05A42C6912B100B9D2D4 /* loading.json in Resources */,
+				077E05A02C690B1C00B9D2D4 /* animals.json in Resources */,
 				077E056A2C68163200B9D2D4 /* Animation.gif in Resources */,
 				07FB37D02C5FCB360070EEFA /* Assets.xcassets in Resources */,
+				077E05A22C690BE700B9D2D4 /* GiftAnimation.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -290,12 +319,15 @@
 				07FB38152C5FDFB70070EEFA /* Contact.swift in Sources */,
 				07FB37CE2C5FCB350070EEFA /* ContentView.swift in Sources */,
 				077E05662C680C2600B9D2D4 /* Env.swift in Sources */,
+				077E059B2C6908B900B9D2D4 /* ImageGenerateView.swift in Sources */,
 				07FB37CC2C5FCB350070EEFA /* BirthdaysApp.swift in Sources */,
+				077E056C2C683B5E00B9D2D4 /* CallAndMessage.swift in Sources */,
 				07FB37DC2C5FCC670070EEFA /* AddContactView.swift in Sources */,
 				077E055F2C67DC1500B9D2D4 /* Birthdates.swift in Sources */,
 				077E055D2C66ECCE00B9D2D4 /* DetailScreen.swift in Sources */,
 				077E055B2C66E9DD00B9D2D4 /* WishView.swift in Sources */,
 				077E05682C68160C00B9D2D4 /* AnimationLoading.swift in Sources */,
+				077E05992C69088C00B9D2D4 /* OpenAIService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -589,6 +621,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		077E059C2C690AC400B9D2D4 /* XCRemoteSwiftPackageReference "dotlottie-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/LottieFiles/dotlottie-ios";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		077E059D2C690B0200B9D2D4 /* DotLottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 077E059C2C690AC400B9D2D4 /* XCRemoteSwiftPackageReference "dotlottie-ios" */;
+			productName = DotLottie;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 07FB37C02C5FCB350070EEFA /* Project object */;
 }

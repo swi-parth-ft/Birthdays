@@ -22,12 +22,10 @@ struct ContentView: View {
     @State private var defaultImageData: Data = UIImage(systemName: "person")!.jpegData(compressionQuality: 1.0)!
     
     @State private var isShowingDetail = false
+    var birthdates = Birthdates()
+    var callAndMessage = CallAndMessage()
     
-    var dateFormatter: DateFormatter {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "d MMMM" // Set to display month and day only
-        return formatter
-    }
+    
     
     var upcomingContacts: [Contact] {
         let today = Date()
@@ -111,16 +109,16 @@ struct ContentView: View {
                                         
                                         HStack {
                                             VStack(alignment: .leading) {
-                                                Text(isBirthdayToday(birthday: contact.birthday!) ? "\(contact.name) 🎂" : contact.name)
+                                                Text(birthdates.isBirthdayToday(birthday: contact.birthday!) ? "\(contact.name) 🎂" : contact.name)
                                                     .font(.headline)
-                                                Text("\(birthdayText(for: contact.birthday ?? Date()))")
+                                                Text("\(birthdates.birthdayText(for: contact.birthday ?? Date()))")
                                                     .font(.subheadline)
                                                 
                                               
                                             }
                                             .foregroundStyle(.black)
                                             Spacer()
-                                            if birthdayText(for: contact.birthday!) == "Today" {
+                                            if birthdates.birthdayText(for: contact.birthday!) == "Today" {
                                                 Button {
                                                     if selectedContact == contact {
                                                         // Reset the selected person to nil before reassigning
@@ -143,9 +141,9 @@ struct ContentView: View {
                                                 
                                             
                                             if let birthday = contact.birthday {
-                                                if birthdayText(for: contact.birthday!) != "Today" {
+                                                if birthdates.birthdayText(for: contact.birthday!) != "Today" {
                                                     HStack {
-                                                        Text("\(daysUntilBirthday(from: Date(), to: birthday)) days")
+                                                        Text("\(birthdates.daysUntilBirthday(from: Date(), to: birthday)) days")
                                                             .font(.subheadline)
                                                             .foregroundColor(.gray)
                                                         Image(systemName: "arrow.down")
@@ -159,14 +157,14 @@ struct ContentView: View {
                                         .swipeActions(edge: .leading) {
                                             if let phoneNumber = contact.phoneNumber {
                                                 Button {
-                                                    callPhoneNumber(phoneNumber)
+                                                    callAndMessage.callPhoneNumber(phoneNumber)
                                                 } label: {
                                                     Label("Call", systemImage: "phone.fill")
                                                 }
                                                 .tint(.green)
                                                 
                                                 Button {
-                                                    messagePhoneNumber(phoneNumber)
+                                                    callAndMessage.messagePhoneNumber(phoneNumber, withText: "Happy Birthday, \(contact.name) 🎂🎈")
                                                 } label: {
                                                     Label("Message", systemImage: "message.fill")
                                                 }
@@ -242,33 +240,7 @@ struct ContentView: View {
     }
     
     
-    func callPhoneNumber(_ phoneNumber: String) {
-        let phoneURL = URL(string: "tel://\(phoneNumber)")!
-        if UIApplication.shared.canOpenURL(phoneURL) {
-            UIApplication.shared.open(phoneURL, options: [:], completionHandler: nil)
-        } else {
-            // Handle error if the phone cannot open the URL
-            print("Cannot make a call on this device.")
-        }
-    }
     
-    func messagePhoneNumber(_ phoneNumber: String) {
-        let messageURL = URL(string: "sms:\(phoneNumber)")!
-        if UIApplication.shared.canOpenURL(messageURL) {
-            UIApplication.shared.open(messageURL, options: [:], completionHandler: nil)
-        } else {
-            print("Cannot send a message on this device.")
-        }
-    }
-    
-    func isBirthdayToday(birthday: Date) -> Bool {
-        let calendar = Calendar.current
-        let today = Date()
-        let todayComponents = calendar.dateComponents([.month, .day], from: today)
-        let birthdayComponents = calendar.dateComponents([.month, .day], from: birthday)
-        
-        return todayComponents.month == birthdayComponents.month && todayComponents.day == birthdayComponents.day
-    }
     
     func deletePerson(at offsets: IndexSet) {
         for index in offsets {
@@ -329,68 +301,7 @@ struct ContentView: View {
         WidgetCenter.shared.reloadAllTimelines()
     }
     
-    func birthdayText(for date: Date) -> String {
-        let calendar = Calendar.current
-        let today = Date()
-        let tomorrow = calendar.date(byAdding: .day, value: 1, to: today)!
-        let startOfWeek = calendar.nextDate(after: today, matching: .init(weekday: calendar.firstWeekday), matchingPolicy: .nextTime)!
-        let endOfWeek = calendar.date(byAdding: .day, value: 6, to: startOfWeek)!
-        
-        let birthdayComponents = calendar.dateComponents([.month, .day], from: date)
-        let todayComponents = calendar.dateComponents([.month, .day], from: today)
-        let tomorrowComponents = calendar.dateComponents([.month, .day], from: tomorrow)
-        
-        if birthdayComponents == todayComponents {
-            return "Today"
-        } else if birthdayComponents == tomorrowComponents {
-            return "Tomorrow"
-        } else if isDateInThisWeek(date) {
-            let weekday = calendar.component(.weekday, from: today)
-            let targetDate = calendar.nextDate(after: today, matching: birthdayComponents, matchingPolicy: .nextTimePreservingSmallerComponents) ?? date
-            let targetWeekday = calendar.component(.weekday, from: targetDate)
-            return "This \(calendar.weekdaySymbols[targetWeekday - 1])"
-        } else {
-            return dateFormatter.string(from: date)
-        }
-    }
     
-    func isDateInThisWeek(_ date: Date) -> Bool {
-        let calendar = Calendar.current
-        let today = Date()
-        
-        guard let startOfWeek = calendar.dateInterval(of: .weekOfYear, for: today)?.start else {
-            return false
-        }
-        
-        let startOfWeekComponents = calendar.dateComponents([.month, .day], from: startOfWeek)
-        let endOfWeek = calendar.date(byAdding: .day, value: 6, to: startOfWeek)!
-        let endOfWeekComponents = calendar.dateComponents([.month, .day], from: endOfWeek)
-        let dateComponents = calendar.dateComponents([.month, .day], from: date)
-        
-        return (dateComponents.month! > startOfWeekComponents.month! ||
-                (dateComponents.month! == startOfWeekComponents.month! && dateComponents.day! >= startOfWeekComponents.day!)) &&
-        (dateComponents.month! < endOfWeekComponents.month! ||
-         (dateComponents.month! == endOfWeekComponents.month! && dateComponents.day! <= endOfWeekComponents.day!))
-    }
-    
-    func daysUntilBirthday(from startDate: Date, to endDate: Date) -> Int {
-        let calendar = Calendar.current
-        let startComponents = calendar.dateComponents([.month, .day], from: startDate)
-        let endComponents = calendar.dateComponents([.month, .day], from: endDate)
-        
-        let startMonth = startComponents.month!
-        let startDay = startComponents.day!
-        let endMonth = endComponents.month!
-        let endDay = endComponents.day!
-        
-        var daysUntil = (endMonth - startMonth) * 30 + (endDay - startDay)
-        
-        if daysUntil < 0 { // If the birthday is before today, adjust to next year
-            daysUntil += 365
-        }
-        
-        return daysUntil
-    }
 }
 
 

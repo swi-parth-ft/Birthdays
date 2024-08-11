@@ -170,7 +170,7 @@ struct BirthdayWidgetEntryView : View {
                                     }
                                     
                                     
-                                    Link(destination: URL(string: "myapp://message?phoneNumber=\(phoneNumber)")!) {
+                                    Link(destination: URL(string: "myapp://message?phoneNumber=\(phoneNumber)&defaultMessage=Happy%20Birthday%20\(todayBirthdayContact.name)🎂🎈")!) {
                                         Image(systemName: "message.fill")
                                             .resizable()
                                             .aspectRatio(contentMode: .fit)

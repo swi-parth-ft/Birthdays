@@ -187,68 +187,88 @@ struct WishesScreen: View {
     let key = Env.init().key
     @State private var wish: String = ""
     @State private var isCopied = false
+    var callAndMessage = CallAndMessage()
+    @State private var isGeneratingImage = false
+    
     var body: some View {
-        VStack {
-            if !isLoading {
-                HStack {
-                    Button("Smaller") {
-                        size -= 30
-                        generateWish(answers: answers, size: size, name: name)
-                        isCopied = false
-                    }
-                    .padding()
-                    .frame(width: 100)
-                    .background(.white.opacity(0.5))
-                    .cornerRadius(22)
-                    .foregroundColor(.white)
-                    Button("Regerate", systemImage: "sparkles") {
-                        generateWish(answers: answers, size: size, name: name)
-                        isCopied = false
-                    }
-                    .padding()
-                    .frame(width: 130)
-                    .background(.white.opacity(0.5))
-                    .cornerRadius(22)
-                    .foregroundColor(.white)
-                    Button("Longer") {
-                        size += 30
-                        generateWish(answers: answers, size: size, name: name)
-                        isCopied = false
-                    }
-                    .padding()
-                    .frame(width: 100)
-                    .background(.white.opacity(0.5))
-                    .cornerRadius(22)
-                    .foregroundColor(.white)
-                }
-                Text(isCopied ? "Message copied" : "Tap message to copy.")
-                    .font(.caption)
-                    .foregroundStyle(.gray)
-                    .padding(.top)
-                
-                ScrollView {
-                    Text(wish)
-                        .lineLimit(nil) // Allow unlimited lines
-                        .fixedSize(horizontal: false, vertical: true)
+        NavigationStack {
+            VStack {
+                if !isLoading {
+                    HStack {
+                        Button("Smaller") {
+                            size -= 30
+                            generateWish(answers: answers, size: size, name: name)
+                            isCopied = false
+                        }
                         .padding()
-                        .onTapGesture {
-                            isCopied = true
-                            UIPasteboard.general.string = wish
+                        .frame(width: 100)
+                        .background(.white.opacity(0.5))
+                        .cornerRadius(22)
+                        .foregroundColor(.white)
+                        Button("Regerate", systemImage: "sparkles") {
+                            generateWish(answers: answers, size: size, name: name)
+                            isCopied = false
                         }
-                    if number != nil {
-                        Button("", systemImage: "message.fill") {
-                            messagePhoneNumber(number!, withText: wish.description)
+                        .padding()
+                        .frame(width: 130)
+                        .background(.white.opacity(0.5))
+                        .cornerRadius(22)
+                        .foregroundColor(.white)
+                        Button("Longer") {
+                            size += 30
+                            generateWish(answers: answers, size: size, name: name)
+                            isCopied = false
                         }
+                        .padding()
+                        .frame(width: 100)
+                        .background(.white.opacity(0.5))
+                        .cornerRadius(22)
+                        .foregroundColor(.white)
                     }
+                    Text(isCopied ? "Message copied" : "Tap message to copy.")
+                        .font(.caption)
+                        .foregroundStyle(.gray)
+                        .padding(.top)
+                    
+                    ScrollView {
+                        Text(wish)
+                            .lineLimit(nil) // Allow unlimited lines
+                            .fixedSize(horizontal: false, vertical: true)
+                            .padding()
+                            .onTapGesture {
+                                isCopied = true
+                                UIPasteboard.general.string = wish
+                            }
+                        
+                        if number != nil {
+                            Button("", systemImage: "message.fill") {
+                                callAndMessage.messagePhoneNumber(number!, withText: wish.description)
+                            }
+                        }
+                        
+                        
+                    }
+                } else {
+                    GifImage("Animation")
                 }
-            } else {
-                GifImage("Animation")
+                
+                
             }
-            
-            
-        }
-        .onAppear {
-            generateWish(answers: answers, size: size, name: name)
+            .onAppear {
+                generateWish(answers: answers, size: size, name: name)
+            }
+            .sheet(isPresented: $isGeneratingImage) {
+                ImageGenerateView(userInput: wish)
+                    .presentationDetents([.fraction(0.7), .medium])
+            }
+            .toolbar {
+                Button("Generate Image", systemImage: "theatermask.and.paintbrush.fill") {
+                    isGeneratingImage = true
+                }
+                .tint(.white)
+                
+                
+            }
         }
     }
     
@@ -305,21 +325,7 @@ struct WishesScreen: View {
         }.resume()
     }
     
-    func messagePhoneNumber(_ phoneNumber: String, withText text: String) {
-        // Encode the text to be URL-safe
-        
-        let messageURLString = "sms:\(phoneNumber)&body=\(text)"
-        
-        if let messageURL = URL(string: messageURLString) {
-            if UIApplication.shared.canOpenURL(messageURL) {
-                UIApplication.shared.open(messageURL, options: [:], completionHandler: nil)
-            } else {
-                print("Cannot send a message on this device.")
-            }
-        } else {
-            print("Invalid URL.")
-        }
-    }
+    
     
     
 }
@@ -337,5 +343,5 @@ struct WishesScreen: View {
     ], name: "Parth"
 )
     
-    WishView(contact: Contact(id: UUID(), name: "Parth", birthday: Date(), phoneNumber: "6478060801"))
+   // WishView(contact: Contact(id: UUID(), name: "Parth", birthday: Date(), phoneNumber: "6478060801"))
 }
