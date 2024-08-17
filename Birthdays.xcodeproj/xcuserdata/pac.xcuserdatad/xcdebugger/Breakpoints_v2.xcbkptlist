@@ -30,8 +30,8 @@
             filePath = "BirthdayWidget/BirthdayWidget.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "87"
-            endingLineNumber = "87"
+            startingLineNumber = "225"
+            endingLineNumber = "225"
             landmarkName = "birthdayText(for:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -46,8 +46,8 @@
             filePath = "BirthdayWidget/BirthdayWidget.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "62"
-            endingLineNumber = "62"
+            startingLineNumber = "200"
+            endingLineNumber = "200"
             landmarkName = "upcomingContacts"
             landmarkType = "24">
          </BreakpointContent>
@@ -62,9 +62,9 @@
             filePath = "BirthdayWidget/BirthdayWidget.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "48"
-            endingLineNumber = "48"
-            landmarkName = "BirthdayWidgetEntryView"
+            startingLineNumber = "186"
+            endingLineNumber = "186"
+            landmarkName = "MediumBirthdayWidgetEntryView"
             landmarkType = "14">
          </BreakpointContent>
       </BreakpointProxy>
@@ -82,6 +82,22 @@
             endingLineNumber = "37"
             landmarkName = "callPhoneNumber(_:)"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "AB423ADE-3CB4-4528-BD0D-332DCBD35547"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "BirthdayWidget/BirthdayWidget.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "54"
+            endingLineNumber = "54"
+            landmarkName = "body"
+            landmarkType = "24">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

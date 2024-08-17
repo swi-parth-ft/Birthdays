@@ -43,9 +43,147 @@ struct SimpleEntry: TimelineEntry {
     let configuration: ConfigurationAppIntent
 }
 
-
-
 struct BirthdayWidgetEntryView : View {
+    var entry: Provider.Entry
+    @Environment(\.widgetFamily) var widgetFamily
+
+    var body: some View {
+        switch widgetFamily {
+        case .systemSmall:
+            SmallBirthdayWidgetEntryView(entry: entry)
+
+        case .systemMedium:
+            MediumBirthdayWidgetEntryView(entry: entry)
+        default:
+            Text("Default")
+        }
+    }
+}
+struct SmallBirthdayWidgetEntryView: View {
+    var entry: Provider.Entry
+    @Query(sort: \Contact.birthday, order: .reverse) var contact: [Contact]
+    let dayFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd"
+        return formatter
+    }()
+
+    let monthFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM"
+        return formatter
+    }()
+    var upcomingContacts: [Contact] {
+        let today = Date()
+        return Array(contact.filter { $0.birthday != nil }
+            .sorted { (c1, c2) -> Bool in
+                let calendar = Calendar.current
+                guard let birthday1 = c1.birthday, let birthday2 = c2.birthday else {
+                    return false
+                }
+                let components1 = calendar.dateComponents([.month, .day], from: birthday1)
+                let components2 = calendar.dateComponents([.month, .day], from: birthday2)
+                
+                if let month1 = components1.month, let day1 = components1.day,
+                   let month2 = components2.month, let day2 = components2.day {
+                    if month1 == month2 {
+                        return day1 < day2
+                    } else {
+                        return month1 < month2
+                    }
+                }
+                return false
+            }
+            .filter {
+                let birthdayComponents = Calendar.current.dateComponents([.month, .day], from: $0.birthday!)
+                let todayComponents = Calendar.current.dateComponents([.month, .day], from: today)
+                return (birthdayComponents.month! > todayComponents.month!) ||
+                (birthdayComponents.month! == todayComponents.month! && birthdayComponents.day! >= todayComponents.day!)
+            }
+            .prefix(1))
+    }
+
+    var body: some View {
+        ZStack {
+            if let nextContact = upcomingContacts.first {
+                let birthText = birthdayText(for: nextContact.birthday!)
+                if birthText  == "Today" {
+                    VStack(alignment: .center) {
+                        Text("🎂")
+                            .font(.system(size: 20, weight: .bold))
+                        Text("It's")
+                            .font(.system(size: 20, weight: .bold))
+                        Text("\(nextContact.name)'s")
+                            .font(.system(size: 22, weight: .bold))
+                        Text("Birthday")
+                            .font(.system(size: 20, weight: .bold))
+                 
+                    }
+                } else if birthText == "Tomorrow" {
+                    VStack(alignment: .center) {
+                        Text("Tomorrow's")
+                            .font(.system(size: 20, weight: .bold))
+                        Text("\(nextContact.name)'s")
+                            .font(.system(size: 22, weight: .bold))
+                        Text("Birthday 🎉")
+                            .font(.system(size: 12, weight: .regular))
+                        
+                    }
+                } else {
+                    VStack(alignment: .center) {
+                        Text("\(nextContact.name)'s")
+                            .font(.system(size: 20, weight: .bold))
+                        Text("Birthday is on 🎈")
+                            .font(.system(size: 12, weight: .regular))
+  
+                            Text(nextContact.birthday!, formatter: dayFormatter)
+                                .font(.system(size: 60, weight: .bold))
+                           
+                            Text(nextContact.birthday!, formatter: monthFormatter)
+                                .font(.system(size: 20, weight: .regular))
+                        
+                    }
+                }
+            } else {
+                Text("No upcoming birthdays")
+            }
+        }
+        
+        .foregroundColor(.white)
+        .widgetBackground {
+            LinearGradient(
+                gradient: Gradient(colors: [Color.yellow, Color.orange, Color.pink, Color.purple]),
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )        }
+    }
+
+    func birthdayText(for date: Date) -> String {
+        let calendar = Calendar.current
+        let today = Date()
+        let tomorrow = calendar.date(byAdding: .day, value: 1, to: today)!
+        
+        let birthdayComponents = calendar.dateComponents([.month, .day], from: date)
+        let todayComponents = calendar.dateComponents([.month, .day], from: today)
+        let tomorrowComponents = calendar.dateComponents([.month, .day], from: tomorrow)
+        
+        if birthdayComponents == todayComponents {
+            return "Today"
+        } else if birthdayComponents == tomorrowComponents {
+            return "Tomorrow"
+        } else {
+            return dateFormatter.string(from: date)
+        }
+    }
+    
+    var dateFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "d MMMM"
+        return formatter
+    }
+}
+
+struct MediumBirthdayWidgetEntryView : View {
     var entry: Provider.Entry
     @Query(sort: \Contact.birthday, order: .reverse) var contact: [Contact]
     var dateFormatter: DateFormatter {
@@ -250,6 +388,7 @@ struct BirthdayWidgetEntryView : View {
         
     }
 }
+
 
 struct BirthdayWidget: Widget {
     let kind: String = "BirthdayWidget"

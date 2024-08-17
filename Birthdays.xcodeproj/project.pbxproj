@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		076864E32C71682A00E423B6 /* Shiny in Frameworks */ = {isa = PBXBuildFile; productRef = 076864E22C71682A00E423B6 /* Shiny */; };
 		077E055B2C66E9DD00B9D2D4 /* WishView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077E055A2C66E9DD00B9D2D4 /* WishView.swift */; };
 		077E055D2C66ECCE00B9D2D4 /* DetailScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077E055C2C66ECCE00B9D2D4 /* DetailScreen.swift */; };
 		077E055F2C67DC1500B9D2D4 /* Birthdates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077E055E2C67DC1500B9D2D4 /* Birthdates.swift */; };
@@ -118,6 +119,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				076864E32C71682A00E423B6 /* Shiny in Frameworks */,
 				07FB381F2C5FDFDF0070EEFA /* SwiftUI.framework in Frameworks */,
 				07FB381D2C5FDFDF0070EEFA /* WidgetKit.framework in Frameworks */,
 			);
@@ -275,6 +277,7 @@
 			mainGroup = 07FB37BF2C5FCB350070EEFA;
 			packageReferences = (
 				077E059C2C690AC400B9D2D4 /* XCRemoteSwiftPackageReference "dotlottie-ios" */,
+				076864E12C71682A00E423B6 /* XCRemoteSwiftPackageReference "shiny" */,
 			);
 			productRefGroup = 07FB37C92C5FCB350070EEFA /* Products */;
 			projectDirPath = "";
@@ -623,6 +626,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		076864E12C71682A00E423B6 /* XCRemoteSwiftPackageReference "shiny" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/maustinstar/shiny.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 		077E059C2C690AC400B9D2D4 /* XCRemoteSwiftPackageReference "dotlottie-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/LottieFiles/dotlottie-ios";
@@ -634,6 +645,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		076864E22C71682A00E423B6 /* Shiny */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 076864E12C71682A00E423B6 /* XCRemoteSwiftPackageReference "shiny" */;
+			productName = Shiny;
+		};
 		077E059D2C690B0200B9D2D4 /* DotLottie */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 077E059C2C690AC400B9D2D4 /* XCRemoteSwiftPackageReference "dotlottie-ios" */;
