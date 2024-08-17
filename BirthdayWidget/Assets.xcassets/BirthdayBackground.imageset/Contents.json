@@ -1,15 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Untitled design.jpg",
+      "filename" : "Untitled design-5.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "Untitled design-5 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "Untitled design-5 2.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

@@ -151,11 +151,27 @@ struct SmallBirthdayWidgetEntryView: View {
         
         .foregroundColor(.white)
         .widgetBackground {
-            LinearGradient(
-                gradient: Gradient(colors: [Color.yellow, Color.orange, Color.pink, Color.purple]),
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )        }
+            Group {
+                if upcomingContacts.contains(where: { birthdayText(for: $0.birthday!) == "Today" }) {
+                    Image(.birthdayBackground)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .scaledToFill()
+                        .clipped()
+                        .overlay(
+                            Color.black.opacity(0.4)
+                                .edgesIgnoringSafeArea(.all)
+                        )
+                } else {
+                    LinearGradient(
+                        gradient: Gradient(colors: [Color.yellow, Color.orange, Color.pink, Color.purple]),
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                }
+                
+            }
+        }
     }
 
     func birthdayText(for date: Date) -> String {
