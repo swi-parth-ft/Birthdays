@@ -109,38 +109,65 @@ struct SmallBirthdayWidgetEntryView: View {
                 let birthText = birthdayText(for: nextContact.birthday!)
                 if birthText  == "Today" {
                     VStack(alignment: .center) {
-                        Text("🎂")
-                            .font(.system(size: 20, weight: .bold))
+                       
                         Text("It's")
-                            .font(.system(size: 20, weight: .bold))
+                            .font(.system(size: 20, weight: .bold, design: .rounded))
                         Text("\(nextContact.name)'s")
-                            .font(.system(size: 22, weight: .bold))
-                        Text("Birthday")
-                            .font(.system(size: 20, weight: .bold))
+                            .font(.system(size: 22, weight: .bold, design: .rounded))
+                        Text("Birthday 🎂")
+                            .font(.system(size: 20, weight: .bold, design: .rounded))
+                        
+                        if let phoneNumber = nextContact.phoneNumber {
+                            HStack(alignment: .top) {
+                                Link(destination: URL(string: "myapp://call?phoneNumber=\(phoneNumber)")!) {
+                                    Image(systemName: "phone.fill")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 18, height: 18) // Adjust the size of the icon
+                                        .padding(10)
+                                        .background(Color.white.opacity(0.5))
+                                        .foregroundColor(.green) // Color of the icon
+                                        .clipShape(Circle())
+                                }
+                                
+                                
+                                Link(destination: URL(string: "myapp://message?phoneNumber=\(phoneNumber)&defaultMessage=Happy%20Birthday%20\(nextContact.name)🎂🎈")!) {
+                                    Image(systemName: "message.fill")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 18, height: 18) // Adjust the size of the icon
+                                        .padding(10)
+                                        .background(Color.white.opacity(0.5))
+                                        .foregroundColor(.blue) // Color of the icon
+                                        .clipShape(Circle())
+                                }
+                                
+                            }
+                        }
                  
                     }
                 } else if birthText == "Tomorrow" {
                     VStack(alignment: .center) {
                         Text("Tomorrow's")
-                            .font(.system(size: 20, weight: .bold))
+                            .font(.system(size: 20, weight: .bold, design: .rounded))
                         Text("\(nextContact.name)'s")
-                            .font(.system(size: 22, weight: .bold))
+                            .font(.system(size: 22, weight: .bold, design: .rounded))
                         Text("Birthday 🎉")
-                            .font(.system(size: 12, weight: .regular))
+                            .font(.system(size: 12, weight: .regular, design: .rounded))
                         
                     }
                 } else {
                     VStack(alignment: .center) {
                         Text("\(nextContact.name)'s")
-                            .font(.system(size: 20, weight: .bold))
+                            .font(.system(size: 20, weight: .bold, design: .rounded))
                         Text("Birthday is on 🎈")
-                            .font(.system(size: 12, weight: .regular))
+                            .font(.system(size: 12, weight: .regular, design: .rounded))
   
                             Text(nextContact.birthday!, formatter: dayFormatter)
-                                .font(.system(size: 60, weight: .bold))
+                                .font(.system(size: 60, weight: .bold, design: .rounded))
                            
                             Text(nextContact.birthday!, formatter: monthFormatter)
-                                .font(.system(size: 20, weight: .regular))
+                                .font(.system(size: 20, weight: .regular, design: .rounded))
                         
                     }
                 }
