@@ -273,7 +273,7 @@ struct SmallBirthdayWidgetEntryView: View {
                         Text("\(nextContact.name)'s")
                             .font(.system(size: 22, weight: .bold, design: .rounded))
                         Text("Birthday 🎉")
-                            .font(.system(size: 12, weight: .regular, design: .rounded))
+                            .font(.system(size: 22, weight: .bold, design: .rounded))
                         
                     }
                 } else {
